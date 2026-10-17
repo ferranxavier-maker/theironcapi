@@ -40,9 +40,9 @@
   <h1 id="hdr" style="font-size:14px;font-weight:700;margin-bottom:6px">&#9971; Iron Capi</h1>
   <div style="display:flex;overflow-x:auto;border-top:1px solid #f0f0f0">
     <div class="tab" data-tab="nueva" style="--tc:#00a896;font-size:18px;font-weight:700">&#10133;</div>
-    <div class="tab active" data-tab="tabla" style="--tc:#1a7f4b">&#128203; Tabla</div>
-    <div class="tab" data-tab="handicap" style="--tc:#1565c0">&#128201; Handicap</div>
+    <div class="tab active" data-tab="handicap" style="--tc:#1565c0">&#128201; Handicap</div>
     <div class="tab" data-tab="stats" style="--tc:#6d28d9">&#128202; Stats</div>
+    <div class="tab" data-tab="tabla" style="--tc:#1a7f4b">&#128203; Tabla</div>
     <div class="tab" data-tab="records" style="--tc:#b8860b">&#127942; Records</div>
     <div class="tab" data-tab="campos" style="--tc:#0e7490">&#128506; Campos</div>
     <div class="tab" data-tab="comandos" style="--tc:#dc2626">&#9881; Comandos</div>
@@ -1029,9 +1029,9 @@
   <h1 id="hdr-golf" style="font-size:14px;font-weight:700;margin:4px 0 6px">&#127948;&#65039; Golf</h1>
   <div style="display:flex;overflow-x:auto;border-top:1px solid #f0f0f0">
     <div class="gtab" data-gtab="nueva" style="--tc:#00a896;font-size:18px;font-weight:700">&#10133;</div>
-    <div class="gtab active" data-gtab="tabla" style="--tc:#1a7f4b">&#128203; Tabla</div>
-    <div class="gtab" data-gtab="handicap" style="--tc:#1565c0">&#128201; Handicap</div>
+    <div class="gtab active" data-gtab="handicap" style="--tc:#1565c0">&#128201; Handicap</div>
     <div class="gtab" data-gtab="stats" style="--tc:#6d28d9">&#128202; Stats</div>
+    <div class="gtab" data-gtab="tabla" style="--tc:#1a7f4b">&#128203; Tabla</div>
     <div class="gtab" data-gtab="records" style="--tc:#b8860b">&#127942; Records</div>
     <div class="gtab" data-gtab="campos" style="--tc:#0e7490">&#128506; Campos</div>
   </div>
@@ -3097,7 +3097,9 @@ function abrirApp(cual){
   document.getElementById("home").style.display="none";
   document.getElementById("app-pp").style.display=cual==="pp"?"block":"none";
   document.getElementById("app-golf").style.display=cual==="golf"?"block":"none";
-  if(cual==="golf"){normalizeGolf();renderGolfTab("tabla");}
+  if(cual==="golf"){normalizeGolf();}
+  var first=document.querySelector(cual==="golf"?'.gtab[data-gtab="handicap"]':'.tab[data-tab="handicap"]');
+  if(first){first.click();}
   window.scrollTo(0,0);
 }
 function volverHome(){
