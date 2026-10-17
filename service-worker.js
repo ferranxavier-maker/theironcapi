@@ -1,7 +1,7 @@
 // The Iron Capi - Service Worker
 // Estrategia: cache-first para assets estaticos. Network-first para HTML.
 
-const CACHE_NAME = "ironcapi-v23";
+const CACHE_NAME = "ironcapi-v24";
 
 const ASSETS = [
   "./",
