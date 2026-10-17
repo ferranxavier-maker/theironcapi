@@ -32,17 +32,19 @@ Todos los registros en **DNS only** (nube gris, sin proxy). Si se activa el prox
 
 ```
 theironcapi/
-├── index.html           ← La web/app (todo el código va dentro)
+├── index.html           ← Landing (portada de theironcapi.com)
+├── bdd.html             ← App de resultados y estadísticas (todo el código va dentro)
 ├── manifest.json        ← Ficha de la app instalable: nombre, icono, colores
 ├── service-worker.js    ← Copia offline de los archivos y control de versiones
 ├── icon-192.png         ← Icono de la app (Android)
 ├── icon-512.png         ← Icono grande (pantalla de carga)
 ├── apple-touch-icon.png ← Icono para iPhone (180 px)
+├── logo.png             ← Retrato con fondo transparente (landing)
 ├── CNAME                ← Dominio propio. No borrar
 └── README.md            ← Este archivo
 ```
 
-Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. El Excel se genera con SheetJS 0.18.5 desde CDN.
+Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. La landing enlaza con el botón **Resultados** a `bdd.html`. El Excel se genera con SheetJS 0.18.5 desde CDN.
 
 ---
 
@@ -82,4 +84,4 @@ Cosas a tener en cuenta:
 - Borrar los datos del navegador borra las rondas. El JSON es el seguro.
 - **Cambio de dominio:** los datos de la versión antigua (`github.io/bddpp`) no pasan solos a `theironcapi.com`. Exportar JSON desde la versión vieja, importarlo en la nueva y reinstalar la app desde el dominio nuevo.
 - **Pasar a otro dispositivo:** exportar JSON en uno e importarlo en el otro.
-- Mientras todo siga en `theironcapi.com` (incluidas subcarpetas como `/resultados/`), los datos se conservan.
+- Mientras todo siga en `theironcapi.com` (incluida `theironcapi.com/bdd.html`), los datos se conservan.
