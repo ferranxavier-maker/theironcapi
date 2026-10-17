@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a7f4b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Iron Capi">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Iron Capi">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>The Iron Capi</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html,body{background:#fff;min-height:100%}body{font-family:system-ui,sans-serif;font-size:13px;color:#333}.tab{padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;color:#888;white-space:nowrap}.tab.active{color:var(--tc);border-bottom-color:var(--tc)}.controls{display:flex;gap:6px;padding:8px 14px;border-bottom:1px solid #ddd;flex-wrap:wrap;align-items:center;background:#fff;position:sticky;top:75px;z-index:8}input,select{font-size:11px;padding:3px 7px;border:1px solid #ccc;border-radius:4px;height:26px;background:#fff}.wrap{overflow:auto;max-height:calc(100vh - 130px)}table{border-collapse:collapse;font-size:10px;table-layout:fixed}th{padding:4px 3px;font-weight:600;font-size:10px;color:#555;background:#d8e4f0;border-bottom:2px solid #b0c8e0;border-right:1px solid #c0d0e0;white-space:nowrap;text-align:center;position:sticky;top:0;z-index:2}td{border-bottom:1px solid #eee;padding:2px 2px;text-align:center;white-space:nowrap;overflow:hidden}.card{background:#f8f8f8;border-radius:10px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:16px;max-width:420px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}.stat-box{border-radius:10px;padding:10px 12px}.rec-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;border-radius:8px;margin-bottom:6px;border:1px solid #e8e8e8}.rec-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-weight:700}.win-header{border-radius:12px;padding:16px 24px;margin-bottom:14px;text-align:center;position:relative;min-height:100px}.win-side{position:absolute;top:50%;transform:translateY(-50%);text-align:center}.section{padding:14px 18px;max-width:980px}.section-title{font-size:10px;font-weight:700;color:#999;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}.mini-table{width:100%;border-collapse:collapse;font-size:10px;border:1px solid #eee}.mini-table th{background:#f0f4f8;padding:4px 5px;font-size:9px;font-weight:600;color:#666;border-bottom:1px solid #eee;text-align:center}.mini-table td{padding:3px 5px;text-align:center;border-bottom:1px solid #f5f5f5}.mini-table tr:nth-child(even) td{background:#fafafa}
+</style>
+</head>
+<body>
+<div style="border-bottom:1px solid #ddd;position:sticky;top:0;z-index:10;background:#fff;padding:8px 14px 0">
+  <h1 id="hdr" style="font-size:14px;font-weight:700;margin-bottom:6px">&#9971; Iron Capi</h1>
+  <div style="display:flex;overflow-x:auto;border-top:1px solid #f0f0f0">
+    <div class="tab" data-tab="nueva" style="--tc:#00a896;font-size:18px;font-weight:700">&#10133;</div>
+    <div class="tab active" data-tab="tabla" style="--tc:#1a7f4b">&#128203; Tabla</div>
+    <div class="tab" data-tab="stats" style="--tc:#6d28d9">&#128202; Stats</div>
+    <div class="tab" data-tab="records" style="--tc:#b8860b">&#127942; Records</div>
+    <div class="tab" data-tab="last10" style="--tc:#1565c0">&#129351; Last 10</div>
+    <div class="tab" data-tab="last20" style="--tc:#0e7490">&#129352; Last 20</div>
+    <div class="tab" data-tab="last30" style="--tc:#0f766e">&#129353; Last 30</div>
+    <div class="tab" data-tab="comandos" style="--tc:#dc2626">&#9881; Comandos</div>
+  </div>
+</div>
+<div id="pane-nueva" style="display:none">
+<style>
+  /* ========== TARJETA - Spec Ferran ========== */
+  #pane-nueva{background:#edf0f4;--tj-cell-h:38px}
+  #pane-nueva *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  #pane-nueva h2, #pane-nueva h3, #pane-nueva h4, #pane-nueva p,
+  #pane-nueva table, #pane-nueva td, #pane-nueva tr{margin:0;padding:0}
+  #pane-nueva button, #pane-nueva input, #pane-nueva select{margin:0;font-family:inherit}
+  .tj-app{max-width:520px;margin:0 auto;background:#edf0f4;font-family:-apple-system,'Segoe UI',sans-serif;color:#1a1a2e;min-height:100vh;padding-bottom:20px}
+
+  /* Header */
+  .tj-hdr{background:#fff;margin:10px 8px 0;padding:10px 14px;display:flex;gap:10px;align-items:center;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+  .tj-logo{display:flex;align-items:center;flex-shrink:0}
+  .tj-sel{flex:1;min-width:0;padding:7px 10px;border-radius:10px;border:1.5px solid #e8ecf0;background:#edf0f4;font-size:12px;font-weight:600;color:#1a1a2e;outline:none;cursor:pointer;font-family:inherit;height:auto;line-height:normal}
+  .tj-pill{background:#e8f8f5;border-radius:14px;padding:8px 12px;text-align:center;flex-shrink:0}
+  .tj-pill-num{font-size:20px;font-weight:700;color:#00a896;line-height:1}
+  .tj-pill-lbl{font-size:9px;color:#8a95a3;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+  .tj-manual{display:none;background:#fff;margin:6px 8px 0;padding:8px 14px;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+  .tj-manual.show{display:block}
+  .tj-manual input{width:100%;padding:7px 10px;border-radius:10px;border:1.5px solid #e8ecf0;background:#edf0f4;font-size:12px;outline:none;font-family:inherit;color:#1a1a2e}
+
+  /* Secciones de tablas */
+  .tj-sec{background:#fff;margin:10px 8px 0;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+  .tj-sec-title{padding:10px 14px 4px;font-size:10px;font-weight:700;color:#8a95a3;text-transform:uppercase;letter-spacing:1.5px}
+  .tj-tbl{width:100%;border-collapse:separate;border-spacing:2px;font-size:12px;padding:0 8px 8px;table-layout:fixed}
+  .tj-tbl td{height:var(--tj-cell-h);border-radius:9px;text-align:center;cursor:pointer}
+
+  /* Etiqueta lateral */
+  .tj-lbl{text-align:center;font-size:20px;white-space:nowrap;width:44px;height:var(--tj-cell-h);border-radius:9px;border-left:3px solid transparent}
+  .tj-lbl.as{background:#e8f8f5;border-left-color:#00a896}
+  .tj-lbl.ap{background:#f3eeff;border-left-color:#7c5cbf}
+  .tj-lbl.ad{background:#fff4e8;border-left-color:#e67e22}
+  .tj-lbl.ao{background:#fff8ee;border-left-color:#b7770d}
+  .tj-lbl.an{background:#fdecea;border-left-color:#e05252}
+  .tj-lbl.act{box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.08)}
+  .tj-hdr-lbl{text-align:left;font-size:18px;color:#9aa4b1;font-weight:300;padding-left:6px;font-family:Georgia,serif}
+
+  /* Cabecera (numero hoyo) */
+  .tj-h{background:#c8cdd6;color:#6b737c;font-size:11px;font-weight:600}
+  .tj-h.sel{background:#1a1a2e;color:#fff;font-weight:700}
+  .tj-sum{font-size:10px;font-weight:700}
+  .tj-sum-out{background:#e8f8f5;color:#00a896}
+  .tj-sum-score{background:#e8f8f5;color:#00a896}
+  .tj-sum-putt{background:#f0eeff;color:#7c5cbf}
+  .tj-sum-ban{background:#fff4e8;color:#e67e22}
+  .tj-sum-obs{background:#fff8ee}
+  .tj-sum-pen{background:#fdecea}
+
+  /* Celdas de datos */
+  .tj-c{background:#edf0f4;font-weight:600}
+  .tj-c.sel-as{outline:2.5px solid #00a896;outline-offset:-2px}
+  .tj-c.sel-ap{outline:2.5px solid #7c5cbf;outline-offset:-2px}
+  .tj-c.sel-ad{outline:2.5px solid #e67e22;outline-offset:-2px}
+  .tj-c.sel-ao{outline:2.5px solid #b7770d;outline-offset:-2px}
+  .tj-c.sel-an{outline:2.5px solid #e05252;outline-offset:-2px}
+
+  /* Score: circulo y colores */
+  .tj-circ{display:inline-flex;width:26px;height:26px;border-radius:50%;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .tj-h1{background:#d63031;color:#ffdd57}
+  .tj-bir{background:#00b894;color:#fff}
+  .tj-par{background:#fdf8e1;color:#1a1a2e}
+  .tj-bog{background:#74b9ff;color:#0056b3}
+  .tj-dbl{background:#0984e3;color:#fff}
+  .tj-putt-zero{color:#2e7d32;font-weight:700}
+  .tj-putt-num{color:#7c5cbf;font-weight:700}
+  .tj-ban-pos{color:#e05252;font-weight:700}
+  .tj-ban-neg{color:#00a896;font-weight:700}
+
+  /* Controles */
+  .tj-ctrl{background:#fff;margin:10px 8px;border-radius:14px;padding:14px 16px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+  .tj-input-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .tj-bnum{width:64px;height:64px;border-radius:14px;border:1.5px solid #e8ecf0;background:#edf0f4;color:#1a1a2e;font-size:21px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit}
+  .tj-bnum:active{transform:scale(.97)}
+  .tj-bdist-m{width:64px;height:64px;border-radius:14px;border:none;background:#fdecea;color:#e05252;font-size:28px;font-weight:700;cursor:pointer;font-family:inherit}
+  .tj-bdist-p{width:64px;height:64px;border-radius:14px;border:none;background:#e8f8f5;color:#00a896;font-size:28px;font-weight:700;cursor:pointer;font-family:inherit}
+  .tj-bbun{width:64px;height:64px;border-radius:14px;border:1.5px solid #e8ecf0;background:#edf0f4;font-size:28px;cursor:pointer;font-family:inherit}
+  .tj-bbun.on{border:2.5px solid #b7770d;background:#fff8ee}
+  .tj-bpen{width:64px;height:64px;border-radius:14px;border:1.5px solid #e8ecf0;background:#edf0f4;font-size:24px;cursor:pointer;font-family:inherit}
+  .tj-bpen.on-agua{border:2.5px solid #2980b9;background:#eaf4ff}
+  .tj-bpen.on-arbol{border:2.5px solid #2d8a4e;background:#e8f5e9}
+  .tj-bpen.on-zona{border:2.5px solid #e05252;background:#fdecea}
+  .tj-bpen.on-ob{border:2.5px solid #555;background:#eee}
+
+  .tj-nav{display:flex;gap:44px;align-items:center}
+  .tj-bant{padding:7px 16px;border-radius:10px;border:1.5px solid #e8ecf0;background:#edf0f4;color:#8a95a3;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+  .tj-bdown{height:40px;padding:0 28px;border-radius:10px;border:none;background:#1976d2;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+
+  .tj-fin{display:flex;gap:8px;width:100%}
+  .tj-fin button{flex:1;padding:13px 8px;border-radius:12px;border:none;font-size:13px;font-weight:700;letter-spacing:.3px;color:#fff;cursor:pointer;font-family:inherit}
+  .tj-fin .tj-new{background:#1a1a2e}
+  .tj-fin .tj-end{background:#00a896}
+
+  /* Modales */
+  .tj-mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:center;justify-content:center;padding:20px}
+  .tj-mbg.show{display:flex}
+  .tj-modal{background:#fff;border-radius:18px;padding:28px 24px;max-width:300px;width:90%;text-align:center}
+  .tj-modal h3{font-size:17px;font-weight:700;margin-bottom:6px}
+  .tj-modal p{font-size:13px;color:#8a95a3;margin-bottom:22px}
+  .tj-modal-btns{display:flex;gap:10px}
+  .tj-modal-btns button{flex:1;padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+  .tj-mb-cancel{background:#edf0f4;color:#8a95a3}
+  .tj-mb-confirm{background:#e05252;color:#fff}
+  .tj-mb-confirm.green{background:#00a896}
+  .tj-modal input[type=number]{width:100%;padding:12px;font-size:22px;text-align:center;border:1.5px solid #e8ecf0;border-radius:10px;margin-bottom:18px;font-family:inherit;outline:none}
+
+  /* Resumen pantalla completa */
+  .tj-summary{display:none;position:fixed;inset:0;background:#edf0f4;z-index:998;overflow-y:auto}
+  .tj-summary.show{display:block}
+  .tj-sum-hdr{background:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e8ecf0;position:sticky;top:0;z-index:1}
+  .tj-sum-hdr h2{font-size:14px;font-weight:700}
+  .tj-sum-back{padding:6px 12px;border-radius:8px;border:1.5px solid #e8ecf0;background:#edf0f4;color:#8a95a3;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+  .tj-sum-body{padding:10px 8px;max-width:520px;margin:0 auto}
+  .tj-sum-card{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .tj-sum-card h4{font-size:11px;font-weight:700;color:#8a95a3;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+  .tj-grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .tj-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .tj-stat{background:#edf0f4;border-radius:10px;padding:8px 10px}
+  .tj-stat-lbl{font-size:10px;color:#8a95a3;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .tj-stat-val{font-size:20px;font-weight:700;color:#1a1a2e;margin-top:2px}
+  .tj-stat-val.green{color:#00a896}
+  .tj-stat-val.red{color:#e05252}
+  .tj-sum-text{background:#1a1a2e;color:#cfd5dc;padding:14px;border-radius:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;white-space:pre-wrap;line-height:1.55;margin-top:6px;margin-bottom:14px}
+  .tj-copy-btn{margin-top:0;width:100%;padding:11px;border-radius:10px;border:none;background:#1976d2;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+  .tj-save-btn{width:100%;padding:16px;border:none;border-radius:12px;background:#00a896;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+  .tj-save-btn:disabled,.tj-save-btn.done{background:#15803d;cursor:default;opacity:1}
+</style>
+
+<div class="tj-app">
+
+  <!-- Header -->
+  <div class="tj-hdr">
+    <div class="tj-logo"><img alt="Roc & Roll" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABOAGADASIAAhEBAxEB/8QAHQAAAQQDAQEAAAAAAAAAAAAABwAFBggBAgMJBP/EADcQAAEDAgUDAgMHBAEFAAAAAAECAwQFEQAGBxIhEzFBUWEIFCIVMkJScYGRFhcjocEYM0Nisf/EABsBAAIDAQEBAAAAAAAAAAAAAAQGAgMFAAcB/8QAMREAAQMCBAQDBgcAAAAAAAAAAQIDEQAEBRIhMQZBUWFxgcETIpGx0fAUIzJCoeHx/9oADAMBAAIRAxEAPwC5WFhYWOrqWFjFxiJZ3z/QcqxJZnSkplMtFaWSCSePpJ9ATil+4bt0Z3DAq+3tnblYbaSSe1S7HBcyKhzpqfbC9pVt3c2Hc29MVxzHq9m2r5Rbfy/T0Ux+QtAS9MWkqdBv9YF9qUWBO3k9rnvgSsaVZzrVRmT6xmKouolglDzTyg2ocmykptweP05OMRfEloCQDt8fID76TTI1wnc5Mzqgme4/n6AE9Yq6k3NWX4TqG5dVisKWCU9R1KbgWueT74bEajZOU/0v6ipaXLgJZMtHUUT2sL2/3/GK4wtDxJRHj2kuNsoSEqB2IWfJ5FwT5PPfjEg/sMHVAMxY8Nkkb0IaK1L9bLKtyf2wKMfuHNW2iR4UeOH8IaAD1zr2qw0XMNIkqShiY24tXZDags/wm+HQLSRe9v14xT6fotm2FIUunFV0Da2Y4WhxtV/B3XUCAfIxvlXVDPGntWbhZoRLqUEulDrcgKblI7X5V7WIBuk82IwWxjSiQHkRPYj518f4QadQVWD4cI5bH5/Orfggi4PGFceuGjKWYKVmaiMVeizEyYjw4PZST5SoeFA8EYd7Y3UrChI2pJdbW0soWII3BrOOby9gSdyRdQHPn2HvjpgIfFNn93LdHjUemuhiU4pMiVLBIVEZBITsI/8AI4QUgem44ruX0sNlZ++1EWNou8fSyjn/AAOpph1U10qTtem5S09ajLnRmN78+UklEZW7aQlH413IsO3c8+I08KFQMr0+FnuZU63U5Kes6ym635S1CyQ5+3Yd7eMRXR6HHy3TcwZnq8Avy48BDkUu/V/ldNybeeCkc+AcEP4eaPPrs17NtYfXNkTnFFDixcICDbcn/wBiQQCOyR74QL157FbgNz7qSNuZI69APvnXpTdgxhDK1wQExJmCoxMepPXaulDy/qRmAMyqfQaJlmALIjNTGVOuJbSPpBTza37d8S6dVM96fwkz81UKkVyitEB+XSFKaeYBNtym18Ec+P5GG1iZPT8WApkKoy0RUxU/MsB5RbUBG3Ebb27lJ7d8TL4i67Do+lNUaddT1qikQ46L8qUo/V/CQonDHZWFvbsrUgQUyPMfWsW8eeeu7dhaUqS6EmBMgK7zMjeZjrX11/U/I1EyDGzhLqJXS5biWIqGGVOPvPKNgylscldwbjxY3xidqllKBlGl5gc+0FiqS/kYUBuGozHZIWUKZDXcLCkkG5AFu/IxW6PTVUOFo/mHMS0x8vO5nkzX3XztaYJQ2lhSyeAD01KufGHCg0SBkqpaZZxky342S3cx1R+K3KSA3BbkXTGcWsjcd6UpVdRsB6c42WXszaVEQTFLl7hyWrlxptUpSSAesTp46VaDK1UpGaqQmrw4z7Y6zrDrchstvMutOKbcbWL90rSocEji4JxH9YdOoOectqhpCGJzP1xX9tyhfi/kg9iPfGNNq5TJmZKxl/Kq4srLtIZaK5jLpd6k99x115HUuQshKkKV6Fy3tiePOJaaU4r7qQScSft2nUFKxpQVtdv2jyXWlEKTtVbvh9qMvL2p7mT3XA2ioQEyX45PCZCE2UpPsoAX/TFkrYrdkiM7VfigXNkoAchNOEBKbKA6ZIKvA/7qQP0xZLsMZXD5UbWFHY+gpg4vCTeIcj3lISTHUz6RSPbFBNa82NZ4kVGelxwFGZXAyom6S0lHTaHsAG/HlRxfSohRp8gIVtUWlWPobHHmTQqiI0JxlxpPQ+ZQpxa0lSkr3KKVew5/fn9MW4wFFKMvIz6etT4RaQt9ZX0j19Ks1psiFmLTxiFWR03pm6E7JCBdpabJII4BI2gD2IwRtA6PVcvUs5fmMx3osRbios1C+VIUokNlPcKBJv45HfEHyNJGaMkF1noonQFLXLiEXWv6TyPPuD5HfkYJGnsgwIMRCnApS9qVbgd3097+nFsefYDdBi/Uhz3QSSBp8Nq3MdUtTDrY5nY8j1G248qDNZXVKtq3qjKospxmoQ4D/RLRs4pCFsodCD3B2JULjnnDTo3lGdqjWY9PqlbIolCbTujl27hbWoq2Np8BRB3L8ce1n3RVb3/UrU3XwUqccqHWSrvYknkfxjWtw3tE9dGqxDQ4KBOKllCRwYzh/wAjY9S2oBQHsn1w5JU2qHl/pzEHz1rQdU81msWYDvs0qQY10GUgd4GniaN2qYj/AGfRcnRYDa257itrHRQtHQjo3qbSlQN1EbQkAeO4AOGXPOo9Di0fJVLk5UcrUTN1STS0Q5aGk2QCElwospCgDtNuBbkW4w2fEFmWZUq3kXIuWnYhk5llKk/PGOh9TMZtG4raCwUhakk2V6cecDLK2bXNQdVNFItTQtqo0l2ridFcaCFNOMApRuCUpQFWbFwkCxHYcY30g5yZ0rzhxSfwyElPvCST8f6+HejfoZm+kZhdzXQ8v5WjUKlZarLlMYVECEsySm+5aUJSNpuORz94c98T+rzWIEB2TKUUtIH1WG4kegGAv8G+1vSWpVFSkJeqGYqjJUVH7xDgSf8AScafEHqNApGW/lZ+5pEsWbipVaRK4N0J/KgmwUvvtJA5IxRe3YYTlT+o7CoWFmbp0A6JnU1toAqPVtRsy5hU8pybKZEh1AH0stuukMpJ/N02gbehB8jB1wI/hWoNQpunIrNab2VSuPrnySRYkKNkC3gBAAA9LYLlxiOFsFm3CVbmT9+narcbuvxN4pXIQAOgAiPKkoAggi49Meceq1HkZB1nn0yoRWflG5CnY20lLaorqypAPHITu28+mPR3AU+JXShzPMBNUpLcb7WitFIDydyXkA32Ef8Az3xPEG87UxP0onh67FvdQVZQefKRtND/AE8rrUOU1VKTATClTQonrupDbiSfwq7Dm9gT5tgpZiiTnI8Wr0xKWxz8wj0Ue547/wDOKKxalm3KeZWqdG6rBL5SmMpR6a1XttIVxzYgYJlH1zrFFrCX6hPqbDba1IkwendtKgT9IJJANx27Wv2x5pdcOvpVmZVmBEiDqOn0389qeLz2dy6XkkIWnQhc69p89OdWggyPk58erKgRVvLa6fzAbSHNh87+5HtjXUikQ8+ZefprsltDiLORXwASlzsOB4IuD+3pgL0j4hqVWpyoBodObaUU7WpZIeeI8IIG1FhexPci3nD/ACc5ZEjzpba66+xdJcWG+WmheyQdvcgkccW89sWN3V/aj2FwgkHXv9/5QDFg4VpuEaKTsUwrblof6NQ2k/1JDzRlmJCm09jM+V5j7FO+2ErbjmO6kpUy6pNykhSrp8EG1+2CRm7JFZy6nIE/KFYpT1fyyzMbUKqtbbcxyYk9Z26QSlXVUpwJI5va/qMtQcw6dzhFVOqtUTU0ufU/DCHUraHdRFwCPcE/8YhGYtVKhJiuUhnP0ibDWemj5dCm3+mOw3FNwf5PvbDDh+J3imQlKD5g7eQ+lWYpgtrdu+2KwgncGBJ6jx3jfWp5SX6npL8vQqzmWiVFqgOTJdO+WUTJfelAJU440TxsHVASO5cuSAMc9JMtf3Vz/LrNW+dkxkLSlyXISEHYns2hHIbTf8I5J5JwONPcvV3PGZI1KopcjpWrbtSq5Sm9ytx3v6k8m/64vrp9k2n5TpLMSOOo6ltKVuE33EDkj9eee5wam1fvHszh058tN40689fSgrh+0wa1yMiXDsY1naddgNY0GvLepJEYaixW47KEobbSEpSBYAAWAx1/f/eFhW98MoAAgUgkkmTWcarSFJKT2ONsLEq6gfrjotTs4KXMjRmoz1gsvNI+sqH5rnt7jFb876cZso6oqalAqstlp48IX1Gls8XCk83Nr9/XF/zyLHHzvwYj6Ch2O2pPoU4yXsKSpWZsx25Uz2PEzzDYadTmGg7wNvHzryukZOq4q0h+mtORmmVqWFL3NpbSDcC55v245OOAdrzzjVPqsycYKFlSmRuAv6gdiScem8vT/K0qYZb9MbW4e9+Qfe3rjWJp7lSMh1tFLZcQ795LyQ4LeguOMTTbvk/mQY2POuXidkjVjMmTJH7fCARpXnxQ9Pc05mDJbyPKEVFgktgtEg/mUe/64NGnfwx1mYpb1Xq7NMjbQExYqdy7EfiXyL29Ln1xbqm0OkU0Wg0+OxYW+hFsOCQEiyQAPQYtTZj9x06f7Q72OuEfliD1gA+GnLtUP060+y/kmltQaNAaYSgAqWBdbi7ffUo8k/6GJjhYWDEICBArEddW6rMsyaWFhYweBfEqrr//2Q==" style="height:44px;width:auto;object-fit:contain"></div>
+    <select class="tj-sel" id="tj-campo" onchange="tjOnCampo(this.value)">
+      <option value="">Campo...</option>
+    </select>
+    <div class="tj-pill">
+      <div class="tj-pill-num" id="tj-pill-num">&mdash;</div>
+      <div class="tj-pill-lbl">GOLPES</div>
+    </div>
+  </div>
+  <div class="tj-manual" id="tj-manual">
+    <input type="text" id="tj-manual-in" placeholder="Escribe el nombre del campo..." oninput="tjOnManual(this.value)">
+  </div>
+
+  <!-- Tablas -->
+  <div id="tj-tablas"></div>
+
+  <!-- Controles -->
+  <div class="tj-ctrl" id="tj-ctrl"></div>
+
+</div>
+
+<!-- Modal Tarjeta nueva -->
+<div class="tj-mbg" id="tj-mbg-reset">
+  <div class="tj-modal">
+    <h3>&iquest;Empezar tarjeta nueva?</h3>
+    <p>Se borrar&aacute;n todos los datos de la tarjeta actual.</p>
+    <div class="tj-modal-btns">
+      <button class="tj-mb-cancel" onclick="tjHideReset()">Cancelar</button>
+      <button class="tj-mb-confirm" onclick="tjDoReset()">S&iacute;, borrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Bolas perdidas -->
+<div class="tj-mbg" id="tj-mbg-bolas">
+  <div class="tj-modal">
+    <h3>&iquest;Bolas perdidas?</h3>
+    <p>Cu&aacute;ntas bolas has perdido durante la ronda</p>
+    <input type="number" id="tj-bolas-in" min="0" value="0" inputmode="numeric">
+    <div class="tj-modal-btns">
+      <button class="tj-mb-cancel" onclick="tjHideBolas()">Cancelar</button>
+      <button class="tj-mb-confirm green" onclick="tjConfirmFin()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pantalla de resumen -->
+<div class="tj-summary" id="tj-summary">
+  <div class="tj-sum-hdr">
+    <h2>&#9971; Resumen de la ronda</h2>
+    <button class="tj-sum-back" onclick="tjCloseSummary()">&larr; Volver</button>
+  </div>
+  <div class="tj-sum-body" id="tj-sum-body"></div>
+</div>
+
+<script>
+(function(){
+  /* =========================================================
+     TARJETA P&P - escrita siguiendo la spec literal de Ferran
+     ========================================================= */
+
+  var N = 18, PAR = 3;
+
+  var CAMPOS_BASE = [
+    "Accura Tei\u00e0","Bellpuig","bon\u00c0rea","Cambrils","Can Cuy\u00e0s",
+    "Can Mascar\u00f3","Can Pascual","Can Rafael","Canal Ol\u00edmpic",
+    "Castell Godmar","Castell\u00f3-Empuriabrava","Costa Daurada","El Vall\u00e8s",
+    "El Vendrell","Fornells","Franciac","Golf Lloret","Gualta","HCP 1",
+    "La Garriga","Lleida","Mas Gurumbau","Mas Nou","Mas Pag\u00e8s","Mas Tapiolas",
+    "Mas Torrellas","Montseny","Mora","Oller del Mas","Peralada","Platja d'Aro",
+    "Portal del Roc","ROC 3","Sant Cebri\u00e0","Vallromanes"
+  ];
+
+  var ICON_LBL = { score:"\ud83c\udfcc\ufe0f", putt:"\u26f3", ban:"\ud83c\udfaf", obs:"\ud83c\udfd6\ufe0f", pen:"\ud83d\udc80" };
+  var FILAS = ["score","putt","ban","obs","pen"];
+  var FILA_CLS = { score:"as", putt:"ap", ban:"ad", obs:"ao", pen:"an" };
+
+  function nuevoEstado(){
+    return {
+      score: new Array(N).fill(null),
+      putt:  new Array(N).fill(null),
+      ban:   new Array(N).fill(null),
+      obs:   new Array(N).fill(null),
+      pen:   new Array(N).fill(null),
+      activo:0,
+      fila:"score",
+      guardada:false
+    };
+  }
+  window.S = nuevoEstado();
+  try {
+    var saved = JSON.parse(localStorage.getItem("pp9"));
+    if (saved && Array.isArray(saved.score) && saved.score.length === N) {
+      window.S = saved;
+    }
+  } catch(e){}
+
+  function persistEstado(){
+    try { localStorage.setItem("pp9", JSON.stringify(window.S)); } catch(e){}
+  }
+
+  // ======== CAMPOS ========
+  function rellenaSelectCampos(){
+    var sel = document.getElementById("tj-campo");
+    sel.innerHTML = "";
+    var op0 = document.createElement("option");
+    op0.value = ""; op0.textContent = "Campo...";
+    sel.appendChild(op0);
+    var lista = [];
+    CAMPOS_BASE.forEach(function(c){
+      lista.push(c);
+      lista.push(c + " Eppas");
+    });
+    lista.sort(function(a,b){ return a.localeCompare(b,"es"); });
+    var customs = [];
+    try { customs = JSON.parse(localStorage.getItem("pp_customs") || "[]"); } catch(e){}
+    customs.forEach(function(c){ if (lista.indexOf(c) === -1) lista.push(c); });
+    lista.forEach(function(c){
+      var op = document.createElement("option");
+      op.value = c; op.textContent = c;
+      sel.appendChild(op);
+    });
+    var opc = document.createElement("option");
+    opc.value = "__custom__";
+    opc.textContent = "\u270f\ufe0f Otro campo...";
+    sel.appendChild(opc);
+    var savedC = localStorage.getItem("pp_course") || "";
+    if (savedC && lista.indexOf(savedC) !== -1) sel.value = savedC;
+  }
+  window.tjOnCampo = function(v){
+    var mw = document.getElementById("tj-manual");
+    if (v === "__custom__"){
+      mw.classList.add("show");
+      setTimeout(function(){ document.getElementById("tj-manual-in").focus(); }, 50);
+    } else {
+      mw.classList.remove("show");
+      localStorage.setItem("pp_course", v);
+    }
+  };
+  window.tjOnManual = function(v){
+    if (!v) return;
+    localStorage.setItem("pp_course", v);
+    var customs = [];
+    try { customs = JSON.parse(localStorage.getItem("pp_customs") || "[]"); } catch(e){}
+    if (customs.indexOf(v) === -1){
+      customs.push(v);
+      localStorage.setItem("pp_customs", JSON.stringify(customs));
+    }
+  };
+
+  // ======== HEADER ========
+  function renderHeader(){
+    var jugados = 0, total = 0;
+    for (var i=0;i<N;i++){ if (S.score[i] !== null){ jugados++; total += S.score[i]; } }
+    var pn = document.getElementById("tj-pill-num");
+    var pl = document.querySelector(".tj-pill-lbl");
+    if (jugados === 0){
+      pn.textContent = "\u2014";
+      pl.textContent = "GOLPES";
+    } else {
+      var d = total - jugados * PAR;
+      pn.textContent = (d > 0 ? "+"+d : (d === 0 ? "PAR" : String(d)));
+      pl.textContent = total + " GOLPES";
+    }
+  }
+
+  // ======== TABLAS ========
+  function renderTablas(){
+    var cont = document.getElementById("tj-tablas");
+    cont.innerHTML = "";
+    cont.appendChild(seccion(0, 8, "Holes 1\u20139", "OUT"));
+    cont.appendChild(seccion(9, 17, "Holes 10\u201318", "IN"));
+  }
+  function seccion(desde, hasta, titulo, sufijo){
+    var sec = document.createElement("div");
+    sec.className = "tj-sec";
+    var tit = document.createElement("div");
+    tit.className = "tj-sec-title";
+    tit.textContent = titulo;
+    sec.appendChild(tit);
+
+    var tbl = document.createElement("table");
+    tbl.className = "tj-tbl";
+    var tbody = document.createElement("tbody");
+
+    var trH = document.createElement("tr");
+    var tdH0 = document.createElement("td");
+    tdH0.className = "tj-hdr-lbl";
+    tdH0.textContent = "Hole";
+    trH.appendChild(tdH0);
+    for (var i = desde; i <= hasta; i++){
+      var th = document.createElement("td");
+      th.className = "tj-h" + (S.activo === i ? " sel" : "");
+      th.textContent = (i+1);
+      (function(idx){ th.onclick = function(){ S.activo = idx; persistEstado(); render(); }; })(i);
+      trH.appendChild(th);
+    }
+    var tdSum = document.createElement("td");
+    tdSum.className = "tj-sum tj-sum-out";
+    tdSum.textContent = sufijo;
+    trH.appendChild(tdSum);
+    tbody.appendChild(trH);
+
+    FILAS.forEach(function(key){
+      tbody.appendChild(filaDatos(key, desde, hasta));
+    });
+
+    tbl.appendChild(tbody);
+    sec.appendChild(tbl);
+    return sec;
+  }
+  function filaDatos(key, desde, hasta){
+    var tr = document.createElement("tr");
+    var clsFila = FILA_CLS[key];
+    var tdL = document.createElement("td");
+    tdL.className = "tj-lbl " + clsFila + (S.fila === key ? " act" : "");
+    tdL.textContent = ICON_LBL[key];
+    tdL.onclick = function(){ S.fila = key; persistEstado(); render(); };
+    tr.appendChild(tdL);
+
+    var sumNum = 0, hasN = false, bp = 0, bm = 0;
+    for (var i = desde; i <= hasta; i++){
+      var td = document.createElement("td");
+      var sel = (S.activo === i && S.fila === key) ? " sel-" + clsFila : "";
+      td.className = "tj-c" + sel;
+      var v = S[key][i];
+      if (key === "score"){
+        if (v !== null){
+          var span = document.createElement("span");
+          var cls = "tj-circ ";
+          if (v === 1) cls += "tj-h1";
+          else if (v <= 2) cls += "tj-bir";
+          else if (v === 3) cls += "tj-par";
+          else if (v === 4) cls += "tj-bog";
+          else cls += "tj-dbl";
+          span.className = cls;
+          span.textContent = v;
+          td.appendChild(span);
+          sumNum += v; hasN = true;
+        }
+      } else if (key === "putt"){
+        if (v !== null){
+          var sp = document.createElement("span");
+          sp.className = (v === 0 ? "tj-putt-zero" : "tj-putt-num");
+          sp.textContent = v;
+          td.appendChild(sp);
+          sumNum += v; hasN = true;
+        }
+      } else if (key === "ban"){
+        if (v === "+"){ td.innerHTML = "<span class='tj-ban-pos'>+</span>"; bp++; }
+        else if (v === "-"){ td.innerHTML = "<span class='tj-ban-neg'>\u2212</span>"; bm++; }
+      } else if (key === "obs"){
+        if (v) td.textContent = v;
+      } else if (key === "pen"){
+        if (v) td.textContent = v;
+      }
+      (function(idx, k){ td.onclick = function(){ S.activo = idx; S.fila = k; persistEstado(); render(); }; })(i, key);
+      tr.appendChild(td);
+    }
+
+    var ts = document.createElement("td");
+    ts.className = "tj-sum tj-sum-" + key;
+    if (key === "score" || key === "putt"){
+      if (hasN) ts.textContent = sumNum;
+    } else if (key === "ban"){
+      if (bp || bm) ts.textContent = "+" + bp + "/-" + bm;
+    }
+    tr.appendChild(ts);
+    return tr;
+  }
+
+  // ======== CONTROLES ========
+  function renderCtrl(){
+    var c = document.getElementById("tj-ctrl");
+    c.innerHTML = "";
+
+    var inputRow = document.createElement("div");
+    inputRow.className = "tj-input-row";
+
+    if (S.fila === "score" || S.fila === "putt"){
+      var bm = document.createElement("button");
+      bm.className = "tj-bnum";
+      bm.textContent = "\u2212";
+      bm.onclick = function(){ ajusta(-1); };
+      var bp = document.createElement("button");
+      bp.className = "tj-bnum";
+      bp.textContent = "+";
+      bp.onclick = function(){ ajusta(+1); };
+      inputRow.appendChild(bm);
+      inputRow.appendChild(bp);
+    } else if (S.fila === "ban"){
+      var bm2 = document.createElement("button");
+      bm2.className = "tj-bdist-m";
+      bm2.textContent = "\u2212";
+      bm2.onclick = function(){ toggleBan("-"); };
+      var bp2 = document.createElement("button");
+      bp2.className = "tj-bdist-p";
+      bp2.textContent = "+";
+      bp2.onclick = function(){ toggleBan("+"); };
+      inputRow.appendChild(bm2);
+      inputRow.appendChild(bp2);
+    } else if (S.fila === "obs"){
+      var bb = document.createElement("button");
+      var bunEmoji = "\ud83c\udfd6\ufe0f";
+      bb.className = "tj-bbun" + (S.obs[S.activo] === bunEmoji ? " on" : "");
+      bb.textContent = bunEmoji;
+      bb.onclick = function(){ toggleObs(bunEmoji); };
+      inputRow.appendChild(bb);
+    } else if (S.fila === "pen"){
+      var pens = [
+        { e:"\ud83d\udca7", cls:"on-agua"  },
+        { e:"\ud83c\udf33", cls:"on-arbol" },
+        { e:"\ud83d\udea7", cls:"on-zona"  },
+        { e:"\ud83d\udeab", cls:"on-ob"    }
+      ];
+      pens.forEach(function(p){
+        var btn = document.createElement("button");
+        btn.className = "tj-bpen" + (S.pen[S.activo] === p.e ? " " + p.cls : "");
+        btn.textContent = p.e;
+        btn.onclick = function(){ togglePen(p.e); };
+        inputRow.appendChild(btn);
+      });
+    }
+    c.appendChild(inputRow);
+
+    var nav = document.createElement("div");
+    nav.className = "tj-nav";
+    var ant = document.createElement("button");
+    ant.className = "tj-bant";
+    ant.innerHTML = "&larr; Ant";
+    ant.onclick = function(){ S.activo = (S.activo <= 0 ? N-1 : S.activo - 1); S.fila = "score"; persistEstado(); render(); };
+    var down = document.createElement("button");
+    down.className = "tj-bdown";
+    down.textContent = "\u2193";
+    down.onclick = bajarFila;
+    var sig = document.createElement("button");
+    sig.className = "tj-bant";
+    sig.innerHTML = "Sig &rarr;";
+    sig.onclick = function(){ S.activo = (S.activo >= N-1 ? 0 : S.activo + 1); S.fila = "score"; persistEstado(); render(); };
+    nav.appendChild(ant); nav.appendChild(down); nav.appendChild(sig);
+    c.appendChild(nav);
+
+    var fin = document.createElement("div");
+    fin.className = "tj-fin";
+    var nuevo = document.createElement("button");
+    nuevo.className = "tj-new";
+    nuevo.innerHTML = "\ud83c\udd95 Tarjeta nueva";
+    nuevo.onclick = function(){ document.getElementById("tj-mbg-reset").classList.add("show"); };
+    var endb = document.createElement("button");
+    endb.className = "tj-end";
+    endb.innerHTML = "\u26f3 Finalizar ronda";
+    endb.onclick = function(){
+      document.getElementById("tj-bolas-in").value = "0";
+      document.getElementById("tj-mbg-bolas").classList.add("show");
+    };
+    fin.appendChild(nuevo); fin.appendChild(endb);
+    c.appendChild(fin);
+  }
+
+  // ======== ACCIONES ========
+  function ajusta(delta){
+    var i = S.activo;
+    if (S.fila === "score"){
+      var v = S.score[i];
+      if (v === null){
+        // celda vacia: solo + arranca en 1, - no hace nada
+        if (delta > 0) S.score[i] = 1;
+      } else {
+        var nv = v + delta;
+        if (nv < 1) S.score[i] = null;       // bajar de 1 -> vacio
+        else if (nv > 99) S.score[i] = 99;
+        else S.score[i] = nv;
+      }
+    } else if (S.fila === "putt"){
+      var v2 = S.putt[i];
+      if (v2 === null){
+        // celda vacia: solo + arranca en 1, - no hace nada
+        if (delta > 0) S.putt[i] = 1;
+      } else {
+        var nv2 = v2 + delta;
+        if (nv2 < 0) S.putt[i] = null;        // bajar de 0 -> vacio
+        else if (nv2 > 9) S.putt[i] = 9;
+        else S.putt[i] = nv2;
+      }
+    }
+    persistEstado(); render();
+  }
+  function toggleBan(sign){
+    var i = S.activo;
+    S.ban[i] = (S.ban[i] === sign ? null : sign);
+    persistEstado(); render();
+  }
+  function toggleObs(emo){
+    var i = S.activo;
+    S.obs[i] = (S.obs[i] === emo ? null : emo);
+    persistEstado(); render();
+  }
+  function togglePen(emo){
+    var i = S.activo;
+    S.pen[i] = (S.pen[i] === emo ? null : emo);
+    persistEstado(); render();
+  }
+  function bajarFila(){
+    var idx = FILAS.indexOf(S.fila);
+    if (idx < 0 || idx === FILAS.length - 1){
+      if (S.activo < N - 1){
+        S.activo = S.activo + 1;
+        S.fila = "score";
+      }
+    } else {
+      S.fila = FILAS[idx + 1];
+    }
+    persistEstado(); render();
+  }
+
+  // ======== RESET ========
+  window.tjHideReset = function(){ document.getElementById("tj-mbg-reset").classList.remove("show"); };
+  window.tjDoReset = function(){
+    window.S = nuevoEstado();
+    persistEstado();
+    document.getElementById("tj-mbg-reset").classList.remove("show");
+    render();
+  };
+
+  // ======== FINALIZAR ========
+  window.tjHideBolas = function(){ document.getElementById("tj-mbg-bolas").classList.remove("show"); };
+  window.tjConfirmFin = function(){
+    var b = parseInt(document.getElementById("tj-bolas-in").value, 10);
+    if (isNaN(b) || b < 0) b = 0;
+    document.getElementById("tj-mbg-bolas").classList.remove("show");
+    abrirResumen(b);
+  };
+  window.tjCloseSummary = function(){
+    document.getElementById("tj-summary").classList.remove("show");
+  };
+
+  function calcStats(bola){
+    var birdies=0, pares=0, bogeys=0, dobles=0;
+    var gir=0, p3=0, pm3=0, triputts=0, rec=0, sp=0;
+    var bunker=0, agua=0, pen=0;
+    var jugados=0, total=0;
+    for (var i=0;i<N;i++){
+      var sc=S.score[i], pt=S.putt[i], bn=S.ban[i], ob=S.obs[i], pe=S.pen[i];
+      if (sc === null) continue;
+      jugados++; total += sc;
+      var dh = sc - PAR;
+      if (dh <= -1) birdies++;
+      else if (dh === 0) pares++;
+      else if (dh === 1) bogeys++;
+      else dobles++;
+      var hasGIR = (pt !== null && (sc - pt) === 1);
+      if (hasGIR){
+        gir++;
+        if (bn === "-") p3++;
+        else if (bn === "+") pm3++;
+      }
+      if (pt !== null && pt >= 3) triputts++;
+      if (!hasGIR && dh <= 0){
+        if (dh <= -1) sp++;
+        else rec++;
+      }
+      if (ob === "\ud83c\udfd6\ufe0f") bunker++;
+      if (pe === "\ud83d\udca7") agua++;
+      else if (pe === "\ud83c\udf33" || pe === "\ud83d\udea7" || pe === "\ud83d\udeab") pen++;
+    }
+    var diff = total - jugados * PAR;
+    var totalStr = diff > 0 ? "+"+diff : (diff === 0 ? "PAR" : String(diff));
+    return {
+      jugados:jugados, total:total, totalStr:totalStr, diff:diff,
+      birdies:birdies, pares:pares, bogeys:bogeys, dobles:dobles,
+      gir:gir, p3:p3, pm3:pm3, triputts:triputts, rec:rec, sp:sp,
+      bunker:bunker, agua:agua, pen:pen, bola:bola
+    };
+  }
+  function abrirResumen(bola){
+    var st = calcStats(bola);
+    var d = new Date();
+    var fecha = String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear();
+    var campo = localStorage.getItem("pp_course") || "Desconocido";
+    if (!campo || campo === "__custom__") campo = "Desconocido";
+
+    var scoresStr = S.score.map(function(v){return v===null?"-":v;}).join(",");
+    var puttsStr  = S.putt.map(function(v){return v===null?"-":v;}).join(",");
+
+    var txt =
+      "Fecha: "+fecha+"\n"+
+      "Campo: "+campo+"\n"+
+      "Total: "+st.totalStr+"\n"+
+      "Hoyos H1-H18: "+scoresStr+"\n"+
+      "Putts H1-H18: "+puttsStr+"\n"+
+      "Birdies (bir): "+st.birdies+"\n"+
+      "Pares (par): "+st.pares+"\n"+
+      "Bogeys (bog): "+st.bogeys+"\n"+
+      "Dobles+ (dbl): "+st.dobles+"\n"+
+      "GIR: "+st.gir+"\n"+
+      "P<3m (p3): "+st.p3+"\n"+
+      "P>3m (pm3): "+st.pm3+"\n"+
+      "Triputts (trip): "+st.triputts+"\n"+
+      "Recuperaciones (rec): "+st.rec+"\n"+
+      "Super rec (sp): "+st.sp+"\n"+
+      "Bunker (bun): "+st.bunker+"\n"+
+      "Agua (agua): "+st.agua+"\n"+
+      "Penalidad (pen): "+st.pen+"\n"+
+      "Bola perdida (bola): "+st.bola;
+
+    var body = document.getElementById("tj-sum-body");
+    body.innerHTML = "";
+
+    var c1 = document.createElement("div");
+    c1.className = "tj-sum-card";
+    c1.innerHTML = "<h4>Resultado</h4>";
+    var g1 = document.createElement("div");
+    g1.className = "tj-grid3";
+    var totalCls = (st.diff > 0 ? "red" : (st.diff < 0 ? "green" : ""));
+    g1.innerHTML =
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Campo</div><div class='tj-stat-val' style='font-size:13px;line-height:1.3'>"+escapeHTML(campo)+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Fecha</div><div class='tj-stat-val' style='font-size:14px'>"+fecha+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Total</div><div class='tj-stat-val "+totalCls+"'>"+st.totalStr+"</div></div>";
+    c1.appendChild(g1);
+    body.appendChild(c1);
+
+    var c2 = document.createElement("div");
+    c2.className = "tj-sum-card";
+    c2.innerHTML = "<h4>Score</h4>";
+    var g2 = document.createElement("div");
+    g2.className = "tj-grid3";
+    g2.innerHTML =
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Birdies</div><div class='tj-stat-val green'>"+st.birdies+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Pares</div><div class='tj-stat-val'>"+st.pares+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Bogeys</div><div class='tj-stat-val'>"+st.bogeys+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Dobles+</div><div class='tj-stat-val red'>"+st.dobles+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>GIR</div><div class='tj-stat-val'>"+st.gir+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>3-Putts</div><div class='tj-stat-val'>"+st.triputts+"</div></div>";
+    c2.appendChild(g2);
+    body.appendChild(c2);
+
+    var c3 = document.createElement("div");
+    c3.className = "tj-sum-card";
+    c3.innerHTML = "<h4>Approach</h4>";
+    var g3 = document.createElement("div");
+    g3.className = "tj-grid2";
+    g3.innerHTML =
+      "<div class='tj-stat'><div class='tj-stat-lbl'>P&lt;3m</div><div class='tj-stat-val green'>"+st.p3+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>P&gt;3m</div><div class='tj-stat-val'>"+st.pm3+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Recuperaciones</div><div class='tj-stat-val green'>"+st.rec+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Super rec</div><div class='tj-stat-val green'>"+st.sp+"</div></div>";
+    c3.appendChild(g3);
+    body.appendChild(c3);
+
+    var c4 = document.createElement("div");
+    c4.className = "tj-sum-card";
+    c4.innerHTML = "<h4>Problemas</h4>";
+    var g4 = document.createElement("div");
+    g4.className = "tj-grid2";
+    g4.innerHTML =
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Bunker</div><div class='tj-stat-val'>"+st.bunker+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Agua</div><div class='tj-stat-val red'>"+st.agua+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Penalidad</div><div class='tj-stat-val red'>"+st.pen+"</div></div>"+
+      "<div class='tj-stat'><div class='tj-stat-lbl'>Bola perdida</div><div class='tj-stat-val red'>"+st.bola+"</div></div>";
+    c4.appendChild(g4);
+    body.appendChild(c4);
+
+    var c5 = document.createElement("div");
+    c5.className = "tj-sum-card";
+    c5.innerHTML = "<h4>Texto para copiar</h4>";
+    var pre = document.createElement("div");
+    pre.className = "tj-sum-text";
+    pre.textContent = txt;
+    c5.appendChild(pre);
+    var cb = document.createElement("button");
+    cb.className = "tj-copy-btn";
+    cb.textContent = "Copiar al portapapeles";
+    cb.onclick = function(){
+      try {
+        navigator.clipboard.writeText(txt).then(function(){
+          cb.textContent = "Copiado \u2713";
+          setTimeout(function(){ cb.textContent = "Copiar al portapapeles"; }, 1500);
+        }, function(){
+          cb.textContent = "No se pudo copiar";
+        });
+      } catch(e){
+        cb.textContent = "No se pudo copiar";
+      }
+    };
+    c5.appendChild(cb);
+    body.appendChild(c5);
+
+    var c6 = document.createElement("div");
+    c6.className = "tj-sum-card";
+    c6.innerHTML = "<h4>Guardar en BDD</h4>";
+    var sb = document.createElement("button");
+    sb.className = "tj-save-btn";
+    if (S.guardada){
+      sb.textContent = "\u2713 Guardada";
+      sb.disabled = true;
+      sb.classList.add("done");
+    } else {
+      sb.textContent = "\ud83d\udcbe Guardar ronda";
+    }
+    sb.onclick = function(){
+      if (S.guardada) return;
+      var ok = guardarRonda(st, fecha, campo);
+      if (ok){
+        S.guardada = true;
+        persistEstado();
+        sb.textContent = "\u2713 Guardada";
+        sb.disabled = true;
+        sb.classList.add("done");
+      }
+    };
+    c6.appendChild(sb);
+    body.appendChild(c6);
+
+    try {
+      var rounds = JSON.parse(localStorage.getItem("pp_rounds") || "[]");
+      rounds.push({
+        fecha:fecha, campo:campo, total:st.totalStr, totalNum:st.diff,
+        score:S.score.slice(), putt:S.putt.slice(), ban:S.ban.slice(), obs:S.obs.slice(), pen:S.pen.slice(),
+        stats:st, ts: Date.now()
+      });
+      localStorage.setItem("pp_rounds", JSON.stringify(rounds));
+    } catch(e){}
+
+    document.getElementById("tj-summary").classList.add("show");
+  }
+
+  function guardarRonda(st, fecha, campo){
+    // Validaciones
+    var faltan = 0;
+    for (var i=0;i<S.score.length;i++) if (S.score[i] === null) faltan++;
+    if (faltan > 0){
+      alert("Faltan " + faltan + " hoyo(s) por rellenar antes de guardar.");
+      return false;
+    }
+    if (!campo || campo === "Desconocido"){
+      alert("Selecciona un campo antes de guardar.");
+      return false;
+    }
+    // Calcular siguiente n
+    var maxN = 0;
+    for (var k=0;k<RAW.length;k++) if (RAW[k].n > maxN) maxN = RAW[k].n;
+    var newN = maxN + 1;
+    // Calcular hi1
+    var hi1 = 0;
+    for (var j=0;j<S.score.length;j++) if (S.score[j] === 1) hi1++;
+    // Construir entrada RAW (mismos 20 campos que las rondas R211+)
+    var entry = {
+      n: newN,
+      fecha: fecha,
+      campo: campo,
+      total: st.totalStr,
+      totalNum: st.diff,
+      hi1: hi1,
+      bir: st.birdies,
+      par: st.pares,
+      bog: st.bogeys,
+      dbl: st.dobles,
+      gir: st.gir,
+      trip: st.triputts,
+      p3: st.p3,
+      pm3: st.pm3,
+      rec: st.rec,
+      sp: st.sp,
+      bun: st.bunker,
+      agua: st.agua,
+      pen: st.pen,
+      bola: st.bola
+    };
+    var holes = S.score.slice();
+    var putts = S.putt.slice();
+    var ban   = S.ban.slice();
+    var obs   = S.obs.slice();
+    var pen   = S.pen.slice();
+    // Persistir en localStorage
+    try {
+      var extra = JSON.parse(localStorage.getItem("pp_extra_rounds") || "[]");
+      extra.push({ raw: entry, holes: holes, putts: putts, ban: ban, obs: obs, pen: pen });
+      localStorage.setItem("pp_extra_rounds", JSON.stringify(extra));
+    } catch(e){
+      alert("Error guardando: " + e.message);
+      return false;
+    }
+    // Mergear en memoria (todos los globales)
+    RAW.push(entry);
+    var kk = String(newN);
+    HOLES_DATA[kk] = holes;
+    PUTTS_DATA[kk] = putts;
+    BAN_DATA[kk]   = ban;
+    OBS_DATA[kk]   = obs;
+    PEN_DATA[kk]   = pen;
+    // Recalcular campos derivados (totalNum, total, bir, par, bog, dbl, hi1, y agregados de eventos si hay datos hoyo a hoyo)
+    try { normalizeRAW(); } catch(e){}
+    // Actualizar contador del header
+    try {
+      var hdr = document.getElementById("hdr");
+      if (hdr) hdr.textContent = "Iron Capi \u2014 " + RAW.length + " rondas \u00b7 Ferran Lob\u00f3n";
+    } catch(e){}
+    // Re-renderizar la pestaña Tabla (no tiene cache lazy)
+    try { if (typeof renderTable === "function") renderTable(); } catch(e){}
+    // Invalidar la cache de las pestañas lazy (Stats, Records, Last10/20/30)
+    // para que se redibujen la proxima vez que se abran
+    try {
+      if (typeof rendered === "object" && rendered){
+        rendered.stats = false;
+        rendered.records = false;
+        rendered.last10 = false;
+        rendered.last20 = false;
+        rendered.last30 = false;
+      }
+    } catch(e){}
+    return true;
+  }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return { "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c];
+    });
+  }
+
+  function render(){
+    renderHeader();
+    renderTablas();
+    renderCtrl();
+  }
+  window.render = render;
+
+  rellenaSelectCampos();
+  render();
+})();
+</script>
+</div>
+
+<div id="pane-tabla">
+  <div class="controls">
+    <input id="search" placeholder="Buscar..." style="width:140px">
+    <select id="campo-filter"><option value="">Todos los campos</option></select>
+    <select id="sort-sel"><option value="n-desc">Jornada v</option><option value="n-asc">Jornada ^</option><option value="total-desc">Mejor resultado</option><option value="total-asc">Peor resultado</option><option value="bir-desc">Mas birdies</option></select>
+    <span style="margin-left:auto;font-size:11px;color:#999" id="count-lbl"></span>
+  </div>
+  <div class="wrap"><table id="main-table"><thead><tr id="thead-row"></tr></thead><tbody id="tbody"></tbody></table></div>
+</div>
+<div id="pane-stats" style="display:none"><div class="section" id="stats-content"></div></div>
+<div id="pane-records" style="display:none"><div class="section" id="records-content" style="max-width:580px"></div></div>
+<div id="pane-last10" style="display:none"><div class="section" id="last10-content"></div></div>
+<div id="pane-last20" style="display:none"><div class="section" id="last20-content"></div></div>
+<div id="pane-last30" style="display:none"><div class="section" id="last30-content"></div></div>
+<div id="pane-comandos" style="display:none"><div class="section" id="comandos-content" style="max-width:720px"></div></div>
+<script>
+var RAW=[{"n":1,"fecha":"12/07/2024","campo":"Can Mascar\u00f3","total":"+14","totalNum":14,"hi1":0,"bir":1,"par":5,"bog":9,"dbl":3,"gir":3,"trip":0},{"n":2,"fecha":"16/07/2024","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":12,"bog":2,"dbl":3,"gir":6,"trip":0},{"n":3,"fecha":"18/07/2024","campo":"Can Mascar\u00f3","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":10,"bog":7,"dbl":0,"gir":5,"trip":0},{"n":4,"fecha":"19/07/2024","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":4,"par":5,"bog":7,"dbl":2,"gir":7,"trip":0},{"n":5,"fecha":"20/07/2024","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":1,"par":12,"bog":4,"dbl":1,"gir":5,"trip":0},{"n":6,"fecha":"23/07/2024","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":1,"par":11,"bog":6,"dbl":0,"gir":9,"trip":1},{"n":7,"fecha":"25/07/2024","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":10,"bog":5,"dbl":2,"gir":8,"trip":1},{"n":8,"fecha":"26/07/2024","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":3,"par":9,"bog":5,"dbl":1,"gir":8,"trip":0},{"n":9,"fecha":"28/07/2024","campo":"Xixirella","total":"+10","totalNum":10,"hi1":0,"bir":0,"par":10,"bog":6,"dbl":2,"gir":4,"trip":2},{"n":10,"fecha":"13/08/2024","campo":"ROC 3","total":"+12","totalNum":12,"hi1":0,"bir":2,"par":10,"bog":2,"dbl":4,"gir":9,"trip":1},{"n":11,"fecha":"19/08/2024","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":10,"bog":5,"dbl":2,"gir":5,"trip":0},{"n":12,"fecha":"20/08/2024","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":0,"par":12,"bog":4,"dbl":2,"gir":9,"trip":0},{"n":13,"fecha":"22/08/2024","campo":"Gualta","total":"+10","totalNum":10,"hi1":0,"bir":0,"par":11,"bog":6,"dbl":1,"gir":6,"trip":2},{"n":14,"fecha":"23/08/2024","campo":"Gualta","total":"+10","totalNum":10,"hi1":0,"bir":1,"par":10,"bog":4,"dbl":3,"gir":5,"trip":0},{"n":15,"fecha":"24/08/2024","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":0,"par":12,"bog":4,"dbl":2,"gir":5,"trip":2},{"n":16,"fecha":"25/08/2024","campo":"ROC 3","total":"+12","totalNum":12,"hi1":0,"bir":4,"par":6,"bog":3,"dbl":5,"gir":10,"trip":1},{"n":17,"fecha":"27/08/2024","campo":"Can Mascar\u00f3","total":"+7","totalNum":7,"hi1":0,"bir":3,"par":6,"bog":8,"dbl":1,"gir":3,"trip":0},{"n":18,"fecha":"29/08/2024","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":3,"par":6,"bog":8,"dbl":1,"gir":3,"trip":0},{"n":19,"fecha":"02/09/2024","campo":"Can Mascar\u00f3","total":"+10","totalNum":10,"hi1":0,"bir":1,"par":8,"bog":7,"dbl":2,"gir":4,"trip":0},{"n":20,"fecha":"05/09/2024","campo":"Can Mascar\u00f3","total":"+8","totalNum":8,"hi1":0,"bir":0,"par":11,"bog":6,"dbl":1,"gir":3,"trip":0},{"n":21,"fecha":"08/09/2024","campo":"Can Mascar\u00f3","total":"+7","totalNum":7,"hi1":0,"bir":0,"par":12,"bog":5,"dbl":1,"gir":3,"trip":0},{"n":22,"fecha":"10/09/2024","campo":"ROC 3","total":"+4","totalNum":4,"hi1":0,"bir":2,"par":10,"bog":6,"dbl":0,"gir":8,"trip":0},{"n":23,"fecha":"13/09/2024","campo":"ROC 3","total":"+1","totalNum":1,"hi1":0,"bir":4,"par":10,"bog":3,"dbl":1,"gir":8,"trip":0},{"n":24,"fecha":"17/09/2024","campo":"ROC 3","total":"+3","totalNum":3,"hi1":0,"bir":1,"par":14,"bog":2,"dbl":1,"gir":12,"trip":0},{"n":25,"fecha":"19/09/2024","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":0,"par":11,"bog":6,"dbl":1,"gir":8,"trip":0},{"n":26,"fecha":"20/09/2024","campo":"Costa Daurada","total":"+11","totalNum":11,"hi1":0,"bir":1,"par":8,"bog":7,"dbl":2,"gir":8,"trip":0},{"n":27,"fecha":"21/09/2024","campo":"Costa Daurada","total":"+10","totalNum":10,"hi1":0,"bir":1,"par":8,"bog":7,"dbl":2,"gir":8,"trip":0},{"n":28,"fecha":"23/09/2024","campo":"ROC 3","total":"+9","totalNum":9,"hi1":0,"bir":0,"par":10,"bog":7,"dbl":1,"gir":6,"trip":0},{"n":29,"fecha":"24/09/2024","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":10,"bog":6,"dbl":1,"gir":8,"trip":0},{"n":30,"fecha":"01/10/2024","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":5,"par":7,"bog":2,"dbl":4,"gir":10,"trip":0},{"n":31,"fecha":"05/10/2024","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":1,"par":11,"bog":3,"dbl":3,"gir":10,"trip":0},{"n":32,"fecha":"06/10/2024","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":3,"par":12,"bog":1,"dbl":2,"gir":13,"trip":0},{"n":33,"fecha":"08/10/2024","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":1,"par":11,"bog":6,"dbl":0,"gir":7,"trip":0},{"n":34,"fecha":"15/10/2024","campo":"ROC 3","total":"+13","totalNum":13,"hi1":0,"bir":0,"par":8,"bog":7,"dbl":3,"gir":6,"trip":0},{"n":35,"fecha":"17/10/2024","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":2,"par":9,"bog":5,"dbl":2,"gir":5,"trip":0},{"n":36,"fecha":"05/11/2024","campo":"ROC 3","total":"+4","totalNum":4,"hi1":0,"bir":2,"par":10,"bog":6,"dbl":0,"gir":5,"trip":0},{"n":37,"fecha":"19/11/2024","campo":"ROC 3","total":"+9","totalNum":9,"hi1":0,"bir":3,"par":7,"bog":4,"dbl":4,"gir":6,"trip":0},{"n":38,"fecha":"26/11/2024","campo":"ROC 3","total":"+3","totalNum":3,"hi1":0,"bir":4,"par":8,"bog":5,"dbl":1,"gir":8,"trip":2},{"n":39,"fecha":"03/12/2024","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":3,"par":8,"bog":4,"dbl":3,"gir":5,"trip":0},{"n":40,"fecha":"10/12/2024","campo":"ROC 3","total":"+13","totalNum":13,"hi1":0,"bir":0,"par":9,"bog":5,"dbl":4,"gir":5,"trip":1},{"n":41,"fecha":"17/12/2024","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":1,"par":12,"bog":4,"dbl":1,"gir":7,"trip":1},{"n":42,"fecha":"04/01/2025","campo":"ROC 3","total":"+11","totalNum":11,"hi1":0,"bir":1,"par":7,"bog":9,"dbl":1,"gir":9,"trip":4},{"n":43,"fecha":"07/01/2025","campo":"ROC 3","total":"+9","totalNum":9,"hi1":0,"bir":2,"par":8,"bog":6,"dbl":2,"gir":5,"trip":1},{"n":44,"fecha":"11/01/2025","campo":"HCP1","total":"+12","totalNum":12,"hi1":0,"bir":0,"par":7,"bog":10,"dbl":1,"gir":5,"trip":2},{"n":45,"fecha":"11/01/2025","campo":"Vendrell","total":"+12","totalNum":12,"hi1":0,"bir":1,"par":7,"bog":9,"dbl":1,"gir":8,"trip":1},{"n":46,"fecha":"14/01/2025","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":3,"par":8,"bog":4,"dbl":3,"gir":8,"trip":1},{"n":47,"fecha":"16/01/2025","campo":"HCP1","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":10,"bog":5,"dbl":2,"gir":8,"trip":1},{"n":48,"fecha":"19/01/2025","campo":"Vendrell","total":"+18","totalNum":18,"hi1":0,"bir":1,"par":8,"bog":3,"dbl":6,"gir":5,"trip":0},{"n":49,"fecha":"21/01/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":2,"par":11,"bog":2,"dbl":3,"gir":14,"trip":1},{"n":50,"fecha":"24/01/2025","campo":"ROC 3","total":"+4","totalNum":4,"hi1":0,"bir":2,"par":11,"bog":4,"dbl":1,"gir":8,"trip":0},{"n":51,"fecha":"25/01/2025","campo":"BADALONA","total":"+12","totalNum":12,"hi1":0,"bir":2,"par":5,"bog":8,"dbl":3,"gir":9,"trip":3},{"n":52,"fecha":"26/01/2025","campo":"Vendrell","total":"+10","totalNum":10,"hi1":0,"bir":0,"par":10,"bog":6,"dbl":2,"gir":6,"trip":1},{"n":53,"fecha":"29/01/2025","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":1,"par":9,"bog":6,"dbl":2,"gir":6,"trip":1},{"n":54,"fecha":"04/02/2025","campo":"ROC 3","total":"+13","totalNum":13,"hi1":0,"bir":2,"par":8,"bog":4,"dbl":4,"gir":7,"trip":1},{"n":55,"fecha":"07/02/2025","campo":"Fornells","total":"+14","totalNum":14,"hi1":0,"bir":0,"par":7,"bog":9,"dbl":2,"gir":4,"trip":0},{"n":56,"fecha":"09/02/2025","campo":"BADALONA","total":"+3","totalNum":3,"hi1":0,"bir":2,"par":11,"bog":5,"dbl":0,"gir":6,"trip":0},{"n":57,"fecha":"12/02/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":10,"bog":7,"dbl":0,"gir":6,"trip":0},{"n":58,"fecha":"14/02/2025","campo":"BADALONA","total":"+12","totalNum":12,"hi1":0,"bir":0,"par":9,"bog":6,"dbl":3,"gir":8,"trip":1},{"n":59,"fecha":"15/02/2025","campo":"BADALONA","total":"+5","totalNum":5,"hi1":0,"bir":2,"par":10,"bog":5,"dbl":1,"gir":7,"trip":0},{"n":60,"fecha":"18/02/2025","campo":"ROC 3","total":"+11","totalNum":11,"hi1":0,"bir":1,"par":8,"bog":7,"dbl":2,"gir":5,"trip":0},{"n":61,"fecha":"22/02/2025","campo":"El Vall\u00e8s","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":8,"bog":8,"dbl":1,"gir":4,"trip":1},{"n":62,"fecha":"23/02/2025","campo":"Can Rafael","total":"+2","totalNum":2,"hi1":0,"bir":3,"par":12,"bog":2,"dbl":1,"gir":9,"trip":0},{"n":63,"fecha":"25/02/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":2,"par":9,"bog":6,"dbl":1,"gir":8,"trip":0},{"n":64,"fecha":"28/02/2025","campo":"Can Rafael","total":"+5","totalNum":5,"hi1":0,"bir":3,"par":8,"bog":6,"dbl":1,"gir":9,"trip":0},{"n":65,"fecha":"08/03/2025","campo":"El Vall\u00e8s","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":9,"bog":8,"dbl":0,"gir":4,"trip":0},{"n":66,"fecha":"11/03/2025","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":0,"par":8,"bog":10,"dbl":0,"gir":6,"trip":0},{"n":67,"fecha":"13/03/2025","campo":"ROC 3","total":"+4","totalNum":4,"hi1":0,"bir":4,"par":8,"bog":5,"dbl":1,"gir":7,"trip":1},{"n":68,"fecha":"15/03/2025","campo":"La Garriga","total":"+7","totalNum":7,"hi1":0,"bir":0,"par":13,"bog":4,"dbl":1,"gir":9,"trip":1},{"n":69,"fecha":"16/03/2025","campo":"Montseny","total":"+14","totalNum":14,"hi1":0,"bir":1,"par":6,"bog":9,"dbl":2,"gir":6,"trip":1},{"n":70,"fecha":"18/03/2025","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":1,"par":10,"bog":4,"dbl":3,"gir":8,"trip":0},{"n":71,"fecha":"23/03/2025","campo":"Montseny","total":"+12","totalNum":12,"hi1":0,"bir":1,"par":7,"bog":8,"dbl":2,"gir":8,"trip":0},{"n":72,"fecha":"25/03/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":10,"bog":7,"dbl":0,"gir":8,"trip":1},{"n":73,"fecha":"25/03/2025","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":2,"par":9,"bog":7,"dbl":0,"gir":7,"trip":0},{"n":74,"fecha":"28/03/2025","campo":"Montseny","total":"+7","totalNum":7,"hi1":0,"bir":0,"par":12,"bog":5,"dbl":1,"gir":6,"trip":0},{"n":75,"fecha":"29/03/2025","campo":"Montseny","total":"+12","totalNum":12,"hi1":0,"bir":0,"par":7,"bog":10,"dbl":1,"gir":7,"trip":0},{"n":76,"fecha":"31/03/2025","campo":"ROC 3","total":"+11","totalNum":11,"hi1":0,"bir":0,"par":10,"bog":5,"dbl":3,"gir":4,"trip":0},{"n":77,"fecha":"01/04/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":10,"bog":7,"dbl":0,"gir":10,"trip":3},{"n":78,"fecha":"03/04/2025","campo":"Can Cuyas","total":"+10","totalNum":10,"hi1":0,"bir":1,"par":7,"bog":9,"dbl":1,"gir":7,"trip":3},{"n":79,"fecha":"04/04/2025","campo":"Can Cuyas","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":10,"bog":5,"dbl":2,"gir":10,"trip":1},{"n":80,"fecha":"07/04/2025","campo":"Can Rafael","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":11,"bog":4,"dbl":2,"gir":9,"trip":0},{"n":81,"fecha":"10/04/2025","campo":"Can Cuyas","total":"+5","totalNum":5,"hi1":0,"bir":2,"par":10,"bog":5,"dbl":1,"gir":8,"trip":0},{"n":82,"fecha":"13/04/2025","campo":"Can Cuyas","total":"-2","totalNum":-2,"hi1":0,"bir":2,"par":16,"bog":0,"dbl":0,"gir":10,"trip":0},{"n":83,"fecha":"15/04/2025","campo":"Can Rafael","total":"+7","totalNum":7,"hi1":0,"bir":2,"par":9,"bog":5,"dbl":2,"gir":12,"trip":3},{"n":84,"fecha":"17/04/2025","campo":"Can Cuyas","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":9,"bog":7,"dbl":1,"gir":8,"trip":1},{"n":85,"fecha":"18/04/2025","campo":"Can Cuyas","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":9,"bog":6,"dbl":2,"gir":6,"trip":1},{"n":86,"fecha":"22/04/2025","campo":"Can Rafael","total":"+5","totalNum":5,"hi1":0,"bir":0,"par":13,"bog":5,"dbl":0,"gir":5,"trip":1},{"n":87,"fecha":"24/04/2025","campo":"Can Cuyas","total":"+5","totalNum":5,"hi1":0,"bir":3,"par":8,"bog":6,"dbl":1,"gir":6,"trip":1},{"n":88,"fecha":"27/04/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":2,"par":9,"bog":6,"dbl":1,"gir":6,"trip":1},{"n":89,"fecha":"29/04/2025","campo":"Can Cuyas","total":"+2","totalNum":2,"hi1":1,"bir":0,"par":13,"bog":4,"dbl":0,"gir":10,"trip":0},{"n":90,"fecha":"01/05/2025","campo":"ROC 3","total":"+4","totalNum":4,"hi1":0,"bir":1,"par":13,"bog":3,"dbl":1,"gir":7,"trip":0},{"n":91,"fecha":"06/05/2025","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":1,"par":13,"bog":3,"dbl":1,"gir":7,"trip":0},{"n":92,"fecha":"08/05/2025","campo":"Can Cuyas","total":"+5","totalNum":5,"hi1":0,"bir":0,"par":13,"bog":5,"dbl":0,"gir":8,"trip":0},{"n":93,"fecha":"09/05/2025","campo":"Can Cuyas","total":"+4","totalNum":4,"hi1":0,"bir":2,"par":11,"bog":4,"dbl":1,"gir":8,"trip":0},{"n":94,"fecha":"10/05/2025","campo":"Can Cuyas","total":"+6","totalNum":6,"hi1":0,"bir":0,"par":12,"bog":6,"dbl":0,"gir":8,"trip":0},{"n":95,"fecha":"12/05/2025","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":1,"par":9,"bog":5,"dbl":3,"gir":3,"trip":0},{"n":96,"fecha":"13/05/2025","campo":"Oller del Mas","total":"+18","totalNum":18,"hi1":0,"bir":0,"par":8,"bog":6,"dbl":4,"gir":3,"trip":0},{"n":97,"fecha":"14/05/2025","campo":"Can Cuyas","total":"+11","totalNum":11,"hi1":0,"bir":0,"par":9,"bog":7,"dbl":2,"gir":5,"trip":0},{"n":98,"fecha":"20/05/2025","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":10,"bog":6,"dbl":1,"gir":9,"trip":1},{"n":99,"fecha":"27/05/2025","campo":"ROC 3","total":"+2","totalNum":2,"hi1":0,"bir":5,"par":7,"bog":5,"dbl":1,"gir":11,"trip":2},{"n":100,"fecha":"28/05/2025","campo":"Can Rafael","total":"+9","totalNum":9,"hi1":0,"bir":2,"par":9,"bog":5,"dbl":2,"gir":8,"trip":0},{"n":101,"fecha":"31/05/2025","campo":"Franciac","total":"+12","totalNum":12,"hi1":0,"bir":1,"par":7,"bog":7,"dbl":3,"gir":8,"trip":0},{"n":102,"fecha":"02/06/2025","campo":"ROC 3","total":"+18","totalNum":18,"hi1":0,"bir":0,"par":7,"bog":7,"dbl":4,"gir":6,"trip":2},{"n":103,"fecha":"03/06/2025","campo":"ROC 3","total":"+11","totalNum":11,"hi1":0,"bir":0,"par":11,"bog":4,"dbl":3,"gir":7,"trip":0},{"n":104,"fecha":"04/06/2025","campo":"Can Rafael","total":"+11","totalNum":11,"hi1":0,"bir":2,"par":7,"bog":5,"dbl":4,"gir":7,"trip":0},{"n":105,"fecha":"05/06/2025","campo":"Can Rafael","total":"+6","totalNum":6,"hi1":0,"bir":2,"par":11,"bog":3,"dbl":2,"gir":9,"trip":0},{"n":106,"fecha":"07/06/2025","campo":"Can Rafael","total":"+14","totalNum":14,"hi1":0,"bir":0,"par":8,"bog":7,"dbl":3,"gir":6,"trip":2},{"n":107,"fecha":"11/06/2025","campo":"ROC 3","total":"-1","totalNum":-1,"hi1":0,"bir":5,"par":9,"bog":4,"dbl":0,"gir":8,"trip":1},{"n":108,"fecha":"14/06/2025","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":0,"par":9,"bog":8,"dbl":1,"gir":6,"trip":2},{"n":109,"fecha":"01/07/2025","campo":"ROC 3","total":"+4","totalNum":4,"hi1":0,"bir":4,"par":9,"bog":3,"dbl":2,"gir":9,"trip":1},{"n":110,"fecha":"09/07/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":2,"par":9,"bog":6,"dbl":1,"gir":10,"trip":2},{"n":111,"fecha":"15/07/2025","campo":"ROC 3","total":"+11","totalNum":11,"hi1":0,"bir":0,"par":11,"bog":5,"dbl":2,"gir":8,"trip":0},{"n":112,"fecha":"18/07/2025","campo":"Can Mascar\u00f3","total":"+12","totalNum":12,"hi1":0,"bir":1,"par":6,"bog":9,"dbl":2,"gir":5,"trip":2},{"n":113,"fecha":"22/07/2025","campo":"ROC 3","total":"+12","totalNum":12,"hi1":0,"bir":1,"par":6,"bog":9,"dbl":2,"gir":8,"trip":2},{"n":114,"fecha":"23/07/2025","campo":"ROC 3","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":8,"bog":8,"dbl":1,"gir":5,"trip":0},{"n":115,"fecha":"25/07/2025","campo":"Xixirella","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":11,"bog":4,"dbl":2,"gir":5,"trip":0},{"n":116,"fecha":"26/07/2025","campo":"Ordino","total":"+18","totalNum":18,"hi1":0,"bir":0,"par":0,"bog":18,"dbl":0,"gir":5,"trip":0},{"n":117,"fecha":"29/07/2025","campo":"ROC 3","total":"+12","totalNum":12,"hi1":0,"bir":0,"par":7,"bog":10,"dbl":1,"gir":5,"trip":1},{"n":118,"fecha":"30/07/2025","campo":"Can Rafael","total":"+11","totalNum":11,"hi1":0,"bir":0,"par":12,"bog":3,"dbl":3,"gir":5,"trip":1},{"n":119,"fecha":"31/07/2025","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":3,"par":8,"bog":5,"dbl":2,"gir":4,"trip":0},{"n":120,"fecha":"01/08/2025","campo":"ROC 3","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":10,"bog":5,"dbl":2,"gir":4,"trip":0},{"n":121,"fecha":"09/08/2025","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":9,"bog":8,"dbl":0,"gir":5,"trip":0},{"n":122,"fecha":"10/08/2025","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":2,"par":10,"bog":5,"dbl":1,"gir":6,"trip":0},{"n":123,"fecha":"12/08/2025","campo":"ROC 3","total":"0","totalNum":0,"hi1":0,"bir":3,"par":12,"bog":3,"dbl":0,"gir":9,"trip":1},{"n":124,"fecha":"13/08/2025","campo":"Can Rafael","total":"+10","totalNum":10,"hi1":0,"bir":0,"par":10,"bog":6,"dbl":2,"gir":8,"trip":0},{"n":125,"fecha":"20/08/2025","campo":"ROC 3","total":"+3","totalNum":3,"hi1":0,"bir":3,"par":10,"bog":4,"dbl":1,"gir":7,"trip":2},{"n":126,"fecha":"21/08/2025","campo":"ROC 3","total":"+12","totalNum":12,"hi1":0,"bir":1,"par":6,"bog":10,"dbl":1,"gir":6,"trip":1},{"n":127,"fecha":"23/08/2025","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":0,"par":11,"bog":5,"dbl":2,"gir":5,"trip":1},{"n":128,"fecha":"26/08/2025","campo":"ROC 3","total":"+16","totalNum":16,"hi1":0,"bir":0,"par":7,"bog":7,"dbl":4,"gir":5,"trip":1},{"n":129,"fecha":"30/08/2025","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":11,"bog":4,"dbl":2,"gir":7,"trip":1},{"n":130,"fecha":"02/09/2025","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":3,"par":8,"bog":6,"dbl":1,"gir":9,"trip":0},{"n":131,"fecha":"09/09/2025","campo":"ROC 3","total":"+2","totalNum":2,"hi1":0,"bir":3,"par":11,"bog":3,"dbl":1,"gir":7,"trip":0},{"n":132,"fecha":"12/09/2025","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":2,"par":10,"bog":5,"dbl":1,"gir":8,"trip":1},{"n":133,"fecha":"14/09/2025","campo":"BELLPUIG","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":9,"bog":8,"dbl":0,"gir":6,"trip":0},{"n":134,"fecha":"16/09/2025","campo":"ROC 3","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":9,"bog":6,"dbl":2,"gir":8,"trip":2},{"n":135,"fecha":"20/09/2025","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":0,"par":13,"bog":5,"dbl":0,"gir":9,"trip":2},{"n":136,"fecha":"21/09/2025","campo":"ROC 3","total":"+3","totalNum":3,"hi1":0,"bir":5,"par":7,"bog":5,"dbl":1,"gir":10,"trip":2},{"n":137,"fecha":"23/09/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":4,"par":9,"bog":2,"dbl":3,"gir":9,"trip":0},{"n":138,"fecha":"24/09/2025","campo":"Mas Gurumbau","total":"+6","totalNum":6,"hi1":0,"bir":0,"par":12,"bog":6,"dbl":0,"gir":11,"trip":3},{"n":139,"fecha":"27/09/2025","campo":"Mas Gurumbau","total":"+4","totalNum":4,"hi1":0,"bir":4,"par":7,"bog":6,"dbl":1,"gir":7,"trip":1},{"n":140,"fecha":"30/09/2025","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":10,"bog":6,"dbl":1,"gir":10,"trip":2},{"n":141,"fecha":"07/10/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":12,"bog":4,"dbl":1,"gir":7,"trip":0},{"n":142,"fecha":"10/10/2025","campo":"Can Mascar\u00f3","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":11,"bog":4,"dbl":2,"gir":5,"trip":0},{"n":143,"fecha":"14/10/2025","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":0,"par":12,"bog":5,"dbl":1,"gir":9,"trip":2},{"n":144,"fecha":"18/10/2025","campo":"TEIA","total":"+11","totalNum":11,"hi1":0,"bir":0,"par":8,"bog":9,"dbl":1,"gir":5,"trip":1},{"n":145,"fecha":"28/10/2025","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":0,"par":12,"bog":6,"dbl":0,"gir":8,"trip":1},{"n":146,"fecha":"01/11/2025","campo":"Montseny","total":"+9","totalNum":9,"hi1":0,"bir":2,"par":6,"bog":9,"dbl":1,"gir":4,"trip":0},{"n":147,"fecha":"04/11/2025","campo":"ROC 3","total":"+14","totalNum":14,"hi1":0,"bir":1,"par":6,"bog":8,"dbl":3,"gir":7,"trip":1},{"n":148,"fecha":"11/11/2025","campo":"ROC 3","total":"+4","totalNum":4,"hi1":0,"bir":1,"par":13,"bog":3,"dbl":1,"gir":7,"trip":0},{"n":149,"fecha":"13/11/2025","campo":"Can Cuyas","total":"+13","totalNum":13,"hi1":0,"bir":2,"par":5,"bog":10,"dbl":1,"gir":8,"trip":1},{"n":150,"fecha":"17/11/2025","campo":"ROC 3","total":"+2","totalNum":2,"hi1":0,"bir":2,"par":13,"bog":2,"dbl":1,"gir":9,"trip":0},{"n":151,"fecha":"25/11/2025","campo":"ROC 3","total":"+17","totalNum":17,"hi1":0,"bir":3,"par":5,"bog":3,"dbl":7,"gir":7,"trip":2},{"n":152,"fecha":"29/11/2025","campo":"La Garriga","total":"+13","totalNum":13,"hi1":0,"bir":2,"par":6,"bog":6,"dbl":4,"gir":7,"trip":2},{"n":153,"fecha":"02/12/2025","campo":"ROC 3","total":"+10","totalNum":10,"hi1":0,"bir":2,"par":8,"bog":4,"dbl":4,"gir":7,"trip":2},{"n":154,"fecha":"03/12/2025","campo":"Can Rafael","total":"+11","totalNum":11,"hi1":0,"bir":1,"par":11,"bog":3,"dbl":3,"gir":6,"trip":0},{"n":155,"fecha":"07/12/2025","campo":"Canal Ol\u00edmpic","total":"+5","totalNum":5,"hi1":0,"bir":1,"par":11,"bog":6,"dbl":0,"gir":7,"trip":1},{"n":156,"fecha":"09/12/2025","campo":"ROC 3","total":"+2","totalNum":2,"hi1":0,"bir":2,"par":13,"bog":2,"dbl":1,"gir":8,"trip":0},{"n":157,"fecha":"16/12/2025","campo":"ROC 3","total":"+11","totalNum":11,"hi1":0,"bir":1,"par":8,"bog":6,"dbl":3,"gir":3,"trip":0},{"n":158,"fecha":"17/12/2025","campo":"Can Rafael","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":9,"bog":6,"dbl":2,"gir":7,"trip":1},{"n":159,"fecha":"23/12/2025","campo":"ROC 3","total":"+3","totalNum":3,"hi1":0,"bir":4,"par":8,"bog":5,"dbl":1,"gir":11,"trip":2},{"n":160,"fecha":"28/12/2025","campo":"Canal Ol\u00edmpic","total":"+3","totalNum":3,"hi1":0,"bir":2,"par":12,"bog":3,"dbl":1,"gir":6,"trip":0},{"n":161,"fecha":"29/12/2025","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":2,"par":8,"bog":6,"dbl":2,"gir":5,"trip":1},{"n":162,"fecha":"30/12/2025","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":0,"par":13,"bog":5,"dbl":0,"gir":5,"trip":1},{"n":163,"fecha":"31/12/2025","campo":"Can Rafael B","total":"+6","totalNum":6,"hi1":0,"bir":0,"par":12,"bog":6,"dbl":0,"gir":5,"trip":0},{"n":164,"fecha":"01/01/2026","campo":"Can Rafael","total":"+3","totalNum":3,"hi1":0,"bir":2,"par":11,"bog":5,"dbl":0,"gir":6,"trip":0},{"n":165,"fecha":"05/01/2026","campo":"Vendrell Eppa","total":"+14","totalNum":14,"hi1":0,"bir":0,"par":8,"bog":6,"dbl":4,"gir":6,"trip":1},{"n":166,"fecha":"05/01/2026","campo":"ROC 3 EPPA","total":"+4","totalNum":4,"hi1":0,"bir":4,"par":9,"bog":2,"dbl":3,"gir":7,"trip":0},{"n":167,"fecha":"06/01/2026","campo":"Vendrell Eppa","total":"+13","totalNum":13,"hi1":0,"bir":0,"par":7,"bog":10,"dbl":1,"gir":1,"trip":1},{"n":168,"fecha":"06/01/2026","campo":"ROC 3","total":"+2","totalNum":2,"hi1":0,"bir":3,"par":11,"bog":3,"dbl":1,"gir":3,"trip":0},{"n":169,"fecha":"07/01/2026","campo":"ROC 3 EPPA","total":"+7","totalNum":7,"hi1":0,"bir":2,"par":11,"bog":2,"dbl":3,"gir":7,"trip":1},{"n":170,"fecha":"11/01/2026","campo":"Vendrell Eppa","total":"+3","totalNum":3,"hi1":0,"bir":3,"par":10,"bog":4,"dbl":1,"gir":7,"trip":0},{"n":171,"fecha":"13/01/2026","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":10,"bog":7,"dbl":0,"gir":9,"trip":2},{"n":172,"fecha":"16/01/2026","campo":"Vendrell","total":"+13","totalNum":13,"hi1":0,"bir":1,"par":8,"bog":6,"dbl":3,"gir":5,"trip":0},{"n":173,"fecha":"21/01/2026","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":11,"bog":5,"dbl":1,"gir":6,"trip":0},{"n":174,"fecha":"26/01/2026","campo":"ROC 3 EPPA","total":"+4","totalNum":4,"hi1":0,"bir":4,"par":8,"bog":5,"dbl":1,"gir":9,"trip":1},{"n":175,"fecha":"27/01/2026","campo":"ROC 3","total":"+7","totalNum":7,"hi1":0,"bir":0,"par":13,"bog":3,"dbl":2,"gir":11,"trip":1},{"n":176,"fecha":"30/01/2026","campo":"ROC 3 EPPA","total":"+3","totalNum":3,"hi1":0,"bir":1,"par":13,"bog":4,"dbl":0,"gir":10,"trip":0},{"n":177,"fecha":"31/01/2026","campo":"Vallromanes","total":"+7","totalNum":7,"hi1":0,"bir":2,"par":9,"bog":5,"dbl":2,"gir":8,"trip":1},{"n":178,"fecha":"01/02/2026","campo":"Empuriabrava","total":"+12","totalNum":12,"hi1":0,"bir":1,"par":5,"bog":11,"dbl":1,"gir":8,"trip":1},{"n":179,"fecha":"03/02/2026","campo":"ROC 3","total":"+5","totalNum":5,"hi1":0,"bir":0,"par":13,"bog":5,"dbl":0,"gir":8,"trip":2},{"n":180,"fecha":"04/02/2026","campo":"Can Rafael B","total":"+6","totalNum":6,"hi1":0,"bir":3,"par":9,"bog":3,"dbl":3,"gir":6,"trip":0},{"n":181,"fecha":"07/02/2026","campo":"LLEIDA","total":"+6","totalNum":6,"hi1":0,"bir":0,"par":12,"bog":6,"dbl":0,"gir":5,"trip":0},{"n":182,"fecha":"07/02/2026","campo":"ROC 3 B","total":"+5","totalNum":5,"hi1":0,"bir":0,"par":13,"bog":5,"dbl":0,"gir":7,"trip":1},{"n":183,"fecha":"10/02/2026","campo":"ROC 3","total":"+14","totalNum":14,"hi1":0,"bir":1,"par":7,"bog":5,"dbl":5,"gir":5,"trip":1},{"n":184,"fecha":"11/02/2026","campo":"Can Rafael B","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":12,"bog":2,"dbl":3,"gir":6,"trip":0},{"n":185,"fecha":"14/02/2026","campo":"Can Mascar\u00f3","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":7,"bog":10,"dbl":0,"gir":3,"trip":1},{"n":186,"fecha":"14/02/2026","campo":"Can Mascar\u00f3","total":"+11","totalNum":11,"hi1":0,"bir":1,"par":12,"bog":2,"dbl":3,"gir":5,"trip":1},{"n":187,"fecha":"15/02/2026","campo":"LLEIDA","total":"+7","totalNum":7,"hi1":0,"bir":0,"par":12,"bog":5,"dbl":1,"gir":6,"trip":0},{"n":188,"fecha":"17/02/2026","campo":"Can Rafael","total":"+14","totalNum":14,"hi1":0,"bir":1,"par":8,"bog":5,"dbl":4,"gir":6,"trip":0},{"n":189,"fecha":"18/02/2026","campo":"Can Rafael B","total":"0","totalNum":0,"hi1":0,"bir":4,"par":10,"bog":4,"dbl":0,"gir":6,"trip":0},{"n":190,"fecha":"20/02/2026","campo":"Mas Gurumbau","total":"+7","totalNum":7,"hi1":0,"bir":1,"par":10,"bog":6,"dbl":1,"gir":6,"trip":1},{"n":191,"fecha":"21/02/2026","campo":"Montseny","total":"+15","totalNum":15,"hi1":0,"bir":1,"par":5,"bog":8,"dbl":4,"gir":4,"trip":1},{"n":192,"fecha":"24/02/2026","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":2,"par":12,"bog":2,"dbl":2,"gir":10,"trip":1},{"n":193,"fecha":"27/02/2026","campo":"Vendrell","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":10,"bog":7,"dbl":0,"gir":6,"trip":1},{"n":194,"fecha":"28/02/2026","campo":"Vendrell","total":"+9","totalNum":9,"hi1":0,"bir":0,"par":11,"bog":5,"dbl":2,"gir":4,"trip":1},{"n":195,"fecha":"03/03/2026","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":0,"par":14,"bog":3,"dbl":1,"gir":11,"trip":0},{"n":196,"fecha":"04/03/2026","campo":"Can Rafael B","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":9,"bog":6,"dbl":2,"gir":6,"trip":1},{"n":197,"fecha":"06/03/2026","campo":"ROC 3","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":10,"bog":5,"dbl":2,"gir":8,"trip":1},{"n":198,"fecha":"09/03/2026","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":1,"par":8,"bog":9,"dbl":0,"gir":10,"trip":2},{"n":199,"fecha":"10/03/2026","campo":"ROC 3","total":"0","totalNum":0,"hi1":0,"bir":4,"par":10,"bog":4,"dbl":0,"gir":14,"trip":2},{"n":200,"fecha":"11/03/2026","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":11,"bog":5,"dbl":1,"gir":10,"trip":2},{"n":201,"fecha":"13/03/2026","campo":"ROC 3","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":11,"bog":5,"dbl":1,"gir":10,"trip":2},{"n":202,"fecha":"17/03/2026","campo":"ROC 3","total":"0","totalNum":0,"hi1":0,"bir":3,"par":12,"bog":3,"dbl":0,"gir":9,"trip":1},{"n":203,"fecha":"18/03/2026","campo":"Can Rafael B","total":"+7","totalNum":7,"hi1":0,"bir":3,"par":8,"bog":4,"dbl":3,"gir":9,"trip":1},{"n":204,"fecha":"21/03/2026","campo":"BELLPUIG","total":"+5","totalNum":5,"hi1":0,"bir":4,"par":6,"bog":7,"dbl":1,"gir":8,"trip":2},{"n":205,"fecha":"24/03/2026","campo":"ROC 3","total":"+4","totalNum":4,"hi1":0,"bir":1,"par":13,"bog":3,"dbl":1,"gir":12,"trip":0},{"n":206,"fecha":"25/03/2026","campo":"Can Rafael B","total":"+3","totalNum":3,"hi1":0,"bir":2,"par":11,"bog":5,"dbl":0,"gir":13,"trip":2},{"n":207,"fecha":"26/03/2026","campo":"Vallromanes","total":"+5","totalNum":5,"hi1":0,"bir":3,"par":10,"bog":2,"dbl":3,"gir":11,"trip":2},{"n":208,"fecha":"27/03/2026","campo":"ROC 3","total":"+9","totalNum":9,"hi1":0,"bir":0,"par":11,"bog":5,"dbl":2,"gir":11,"trip":2},{"n":209,"fecha":"31/03/2026","campo":"ROC 3","total":"+8","totalNum":8,"hi1":0,"bir":0,"par":11,"bog":6,"dbl":1,"gir":7,"trip":1},{"n":210,"fecha":"01/04/2026","campo":"Can Rafael B","total":"+3","totalNum":3,"hi1":0,"bir":2,"par":12,"bog":3,"dbl":1,"gir":11,"trip":0},{"n":211,"fecha":"06/04/2026","campo":"ROC 3","total":"+3","totalNum":3,"hi1":0,"bir":3,"par":9,"bog":6,"dbl":0,"gir":8,"trip":1,"p3":1,"pm3":7,"rec":5,"sp":1},{"n":212,"fecha":"07/04/2026","campo":"ROC 3","total":"+3","totalNum":3,"hi1":0,"bir":0,"par":15,"bog":3,"dbl":0,"gir":12,"trip":2,"p3":3,"pm3":9,"rec":5,"sp":0},{"n":213,"fecha":"08/04/2026","campo":"Can Rafael B","total":"+7","totalNum":7,"hi1":0,"bir":2,"par":8,"bog":7,"dbl":1,"gir":12,"trip":5,"p3":4,"pm3":8,"rec":2,"sp":0},{"n":214,"fecha":"12/04/2026","campo":"Sant Cebri\u00e0","total":"+12","totalNum":12,"hi1":0,"bir":1,"par":7,"bog":7,"dbl":3,"gir":7,"trip":1,"p3":2,"pm3":4,"rec":2,"sp":0,"bun":0,"agua":0,"pen":0,"bola":0},{"n":215,"fecha":"14/04/2026","campo":"ROC 3","total":"+11","totalNum":11,"hi1":0,"bir":1,"par":8,"bog":6,"dbl":3,"gir":5,"trip":2,"p3":1,"pm3":3,"rec":5,"sp":1,"bun":0,"agua":0,"pen":0,"bola":0},{"n":216,"fecha":"15/04/2026","campo":"El Vall\u00e8s","total":"+7","totalNum":7,"hi1":0,"bir":2,"par":7,"bog":9,"dbl":0,"gir":6,"trip":2,"p3":2,"pm3":4,"rec":5,"sp":0,"bun":0,"agua":0,"pen":0,"bola":0},{"n":217,"fecha":"17/04/2026","campo":"El Vall\u00e8s","total":"+7","totalNum":7,"hi1":0,"bir":2,"par":8,"bog":7,"dbl":1,"gir":8,"trip":1,"p3":3,"pm3":5,"rec":3,"sp":0,"bun":2,"agua":0,"pen":0,"bola":0},{"n":218,"fecha":"18/04/2026","campo":"El Vall\u00e8s","total":"+7","totalNum":7,"hi1":0,"bir":2,"par":9,"bog":5,"dbl":2,"gir":8,"trip":0,"p3":5,"pm3":3,"rec":3,"sp":0,"bun":3,"agua":0,"pen":0,"bola":0},{"n":219,"fecha":"21/04/2026","campo":"ROC 3","total":"+18","totalNum":18,"hi1":0,"bir":0,"par":9,"bog":4,"dbl":5,"gir":7,"trip":1,"p3":2,"pm3":5,"rec":2,"sp":0,"bun":0,"agua":1,"pen":1,"bola":1},{"n":220,"fecha":"28/04/2026","campo":"Canal Ol\u00edmpic","total":"+4","totalNum":4,"hi1":0,"bir":3,"par":8,"bog":7,"dbl":0,"gir":7,"trip":0,"p3":3,"pm3":4,"rec":4,"sp":0,"bun":1,"agua":0,"pen":0,"bola":0},{"n":221,"fecha":"29/04/2026","campo":"Canal Ol\u00edmpic","total":"+6","totalNum":6,"hi1":0,"bir":1,"par":10,"bog":7,"dbl":0,"gir":9,"trip":0,"p3":5,"pm3":4,"rec":2,"sp":0,"bun":1,"agua":0,"pen":1,"bola":1},{"n":222,"fecha":"30/04/2026","campo":"Canal Ol\u00edmpic","total":"-2","totalNum":-2,"hi1":0,"bir":3,"par":14,"bog":1,"dbl":0,"gir":12,"trip":0,"p3":7,"pm3":5,"rec":5,"sp":0,"bun":0,"agua":0,"pen":0,"bola":0},{"n":223,"fecha":"02/05/2026","campo":"Can Rafael","total":"+9","totalNum":9,"hi1":0,"bir":1,"par":9,"bog":6,"dbl":2,"gir":11,"trip":2,"p3":3,"pm3":8,"rec":1,"sp":0,"bun":0,"agua":0,"pen":0,"bola":0}];
+var CAMPO_COLORS={"ROC 3":"#c8f0dc","ROC 3 EPPA":"#a8e6c8","ROC 3 B":"#90dcb4","Can Mascar\u00f3":"#c8e4f8","Can Rafael":"#d8d4fc","Can Rafael B":"#c4c0f4","Can Cuyas":"#fde8b4","Vendrell":"#fcd8c4","Vendrell Eppa":"#f8c8b0","BADALONA":"#f8d4e4","Montseny":"#d4edbc","Gualta":"#b8e8d0","Xixirella":"#f4d0d0","Costa Daurada":"#fde0a8","Fornells":"#c8eab4","La Garriga":"#e4e0d8","Mas Gurumbau":"#f4d0e4","HCP1":"#c0d8f4","Canal Ol\u00edmpic":"#7ec8e3","Ordino":"#b8e4b8","Oller del Mas":"#fdd4a0","Franciac":"#dcdcd4","El Vall\u00e8s":"#f8d0d0","BELLPUIG":"#dcdcd4","TEIA":"#f4d0e8","LLEIDA":"#fde4b0","Vallromanes":"#c4d8f4","Empuriabrava":"#fcd4c0","Sant Cebri\u00e0":"#f0e4d4"};
+var DC="#eeeeee";function gc(c){return CAMPO_COLORS[c]||DC;}
+var HOLES_DATA={"1":[4,3,4,4,3,4,4,3,4,2,4,3,3,5,5,5,4,4],"2":[5,3,3,3,3,4,5,3,3,2,3,3,3,3,5,3,4,3],"3":[3,4,4,4,3,3,4,2,3,3,4,3,4,3,4,3,3,3],"4":[4,3,3,4,4,6,2,4,2,3,4,3,3,2,5,4,4,2],"5":[3,3,3,3,3,3,2,3,3,3,4,4,3,3,4,3,5,4],"6":[4,3,3,3,3,3,3,4,4,4,4,3,3,4,2,3,3,3],"7":[4,4,5,4,4,3,3,3,3,3,3,3,3,5,3,4,2,3],"8":[4,3,3,3,2,2,4,6,4,3,3,3,2,4,3,4,3,3],"9":[5,3,4,3,3,4,4,3,3,3,4,3,3,3,4,5,3,4],"10":[3,3,3,5,3,3,6,3,2,4,4,3,3,8,2,3,3,5],"11":[3,4,4,4,3,2,4,3,3,4,5,3,3,3,3,3,5,3],"12":[3,3,3,4,3,5,3,4,3,3,4,5,3,3,3,3,4,3],"13":[3,3,3,3,3,4,3,4,3,4,4,3,3,3,4,7,4,3],"14":[4,3,3,4,3,3,3,5,4,3,4,3,2,3,3,5,3,6],"15":[5,3,3,3,3,3,3,4,5,3,4,3,4,3,3,3,4,3],"16":[2,5,2,3,2,3,5,4,3,3,6,2,3,3,4,5,4,7],"17":[3,3,4,4,4,2,4,3,3,2,5,2,3,4,4,4,3,4],"18":[3,3,4,4,4,2,4,3,3,2,5,2,3,4,4,4,3,4],"19":[2,4,3,4,3,3,3,4,5,4,3,3,3,4,4,5,3,4],"20":[3,4,5,3,3,3,4,4,3,3,4,3,3,3,3,4,3,4],"21":[3,3,3,4,3,3,3,4,3,3,3,4,3,4,4,3,3,5],"22":[4,4,3,4,4,3,3,3,4,2,4,3,3,3,3,3,2,3],"23":[3,4,3,3,2,2,2,3,3,4,4,3,3,5,3,3,2,3],"24":[4,3,3,3,5,2,3,3,3,3,3,4,3,3,3,3,3,3],"25":[4,4,3,4,4,5,3,3,3,3,3,3,3,4,3,4,3,3],"26":[3,6,3,4,3,4,3,4,4,3,5,4,3,3,4,3,2,4],"27":[4,4,3,3,5,3,4,3,3,3,3,4,4,3,4,2,5,4],"28":[3,4,4,3,4,3,3,3,4,3,5,4,3,3,4,4,3,3],"29":[4,3,3,3,4,3,3,3,5,3,4,4,2,3,3,3,4,4],"30":[5,3,3,5,4,3,2,3,4,3,3,2,2,5,2,2,3,5],"31":[3,3,4,3,3,2,5,3,4,3,7,4,3,3,3,5,3,3],"32":[3,3,3,2,3,6,3,3,3,3,4,3,8,2,2,3,3,3],"33":[3,4,3,2,4,3,3,4,3,4,3,3,3,3,3,4,3,4],"34":[3,3,5,3,5,3,3,4,4,4,4,4,3,3,4,3,5,4],"35":[3,3,3,2,4,4,2,3,3,3,4,3,5,6,3,3,4,4],"36":[4,2,4,3,3,4,3,4,2,3,3,3,3,4,3,3,3,4],"37":[2,3,4,3,5,5,3,3,3,5,4,2,5,3,4,2,3,4],"38":[3,3,4,2,4,2,5,4,3,3,3,4,2,4,2,3,3,3],"39":[3,6,3,4,2,5,4,3,4,4,3,2,7,2,3,3,3,3],"40":[3,3,4,4,5,3,3,3,5,4,4,5,4,3,3,3,5,3],"41":[3,3,3,3,4,4,3,3,3,2,4,3,3,3,3,3,5,4],"42":[4,4,3,3,4,3,4,6,4,3,4,2,3,4,3,3,4,4],"43":[2,4,5,3,3,3,4,3,4,4,3,6,3,2,4,3,3,4],"44":[4,4,4,4,3,4,3,3,4,3,3,3,4,3,4,5,4,4],"45":[4,4,3,2,4,4,3,3,4,3,3,4,7,4,3,3,4,4],"46":[4,3,3,3,4,3,4,5,5,3,4,3,2,3,2,2,3,5],"47":[3,4,4,3,3,3,5,3,5,3,2,3,4,4,4,3,3,3],"48":[3,3,4,2,5,4,3,6,6,5,3,3,6,3,3,3,4,6],"49":[3,4,3,3,5,3,3,3,3,2,3,3,2,3,4,5,3,5],"50":[3,4,4,3,3,2,3,3,5,3,3,4,3,4,3,3,3,2],"51":[5,4,2,4,3,4,3,4,4,3,5,4,4,3,3,2,5,4],"52":[3,3,4,4,4,3,4,3,5,3,3,3,3,4,4,3,3,5],"53":[3,6,4,3,5,3,4,3,4,4,3,4,2,4,3,3,3,3],"54":[7,3,3,4,2,3,3,4,5,2,4,3,3,4,5,3,3,6],"55":[4,4,4,3,3,3,4,4,5,3,4,4,3,3,4,4,6,3],"56":[3,3,3,3,3,3,4,2,4,3,3,3,3,3,2,4,4,4],"57":[4,3,4,4,2,3,3,3,4,3,4,3,4,3,3,4,3,3],"58":[4,3,3,3,3,4,5,3,4,4,3,3,5,4,3,5,3,4],"59":[4,4,2,4,2,3,3,3,4,4,3,3,3,5,3,3,3,3],"60":[4,3,3,4,2,3,4,4,4,4,3,3,3,3,5,4,3,6],"61":[4,3,2,4,4,4,3,3,3,4,5,4,3,3,3,4,3,4],"62":[4,3,3,2,2,6,3,3,3,3,3,3,4,3,3,2,3,3],"63":[3,4,4,2,4,3,2,3,4,3,4,5,3,4,3,3,3,3],"64":[4,2,2,3,4,3,3,3,3,4,4,2,5,4,3,4,3,3],"65":[2,3,3,4,4,3,4,4,4,3,3,4,4,3,4,3,3,3],"66":[4,3,3,3,4,3,4,3,3,4,4,4,3,4,4,3,4,4],"67":[3,4,4,3,6,2,2,3,4,3,4,3,2,3,3,3,2,4],"68":[3,4,3,3,3,3,3,4,3,3,6,3,4,3,3,4,3,3],"69":[4,4,3,3,3,2,3,4,4,4,4,4,3,4,7,5,3,4],"70":[6,4,5,3,3,2,3,3,4,3,4,4,3,5,3,3,3,3],"71":[4,4,3,5,4,3,4,3,3,4,4,6,3,3,2,4,4,3],"72":[3,4,4,3,4,3,4,4,4,3,3,4,3,3,3,3,3,2],"73":[3,4,4,3,4,4,3,3,4,2,4,3,3,3,3,3,4,2],"74":[3,3,3,3,4,3,3,3,4,4,4,3,3,3,5,3,3,4],"75":[3,5,4,3,4,3,3,3,4,4,4,4,4,4,3,4,3,4],"76":[3,3,4,3,3,5,3,5,3,3,4,3,5,3,4,3,4,4],"77":[3,4,4,3,3,3,3,2,4,3,4,3,3,3,4,4,4,3],"78":[4,4,3,3,4,4,3,4,3,5,4,3,3,4,4,3,4,2],"79":[3,4,3,3,4,4,3,3,3,6,3,2,3,4,4,5,3,3],"80":[3,5,3,3,4,4,3,2,3,3,3,3,3,5,3,4,3,4],"81":[3,4,3,3,3,5,2,4,4,3,3,4,3,2,3,3,4,3],"82":[3,3,3,3,2,3,3,3,3,3,3,3,3,3,3,3,3,2],"83":[3,5,3,2,4,3,2,4,3,3,3,3,4,4,5,3,3,4],"84":[3,5,4,3,4,3,3,3,3,4,4,2,4,4,3,3,3,4],"85":[3,3,3,4,5,5,4,4,3,3,4,2,4,4,3,3,3,3],"86":[3,4,3,3,4,3,4,3,3,3,4,3,3,3,4,3,3,3],"87":[3,3,4,4,2,4,2,4,4,3,3,4,3,2,3,5,3,3],"88":[2,4,3,3,4,2,3,3,4,5,3,4,3,3,3,4,3,4],"89":[4,4,4,3,3,3,3,3,3,4,3,3,3,3,3,3,3,1],"90":[3,4,3,3,2,3,3,3,5,4,3,3,3,3,4,3,3,3],"91":[4,3,3,3,3,3,3,6,4,3,4,3,3,3,3,2,3,3],"92":[4,3,3,3,3,4,3,4,3,4,3,3,4,3,3,3,3,3],"93":[3,3,3,3,3,2,3,5,4,3,3,4,3,3,4,3,4,2],"94":[4,3,4,3,3,4,3,3,3,3,4,3,3,3,4,4,3,3],"95":[4,5,3,4,3,3,4,3,3,4,3,5,2,5,3,3,3,4],"96":[3,6,3,6,5,4,7,3,3,4,3,4,4,3,4,4,3,3],"97":[4,5,5,3,3,3,3,4,4,3,3,3,3,4,3,4,4,4],"98":[4,3,4,4,6,3,4,3,3,3,3,3,3,4,2,3,3,4],"99":[2,3,2,3,4,3,3,5,4,3,3,2,2,4,2,3,4,4],"100":[7,3,3,3,4,3,2,3,3,4,3,5,4,4,4,2,3,3],"101":[4,5,4,3,4,3,3,5,3,3,3,2,5,3,4,4,4,4],"102":[4,6,4,4,6,3,4,5,3,3,4,4,3,3,3,3,4,6],"103":[5,3,3,3,3,3,3,6,3,3,4,5,4,3,3,4,3,4],"104":[2,4,3,3,5,3,3,5,3,4,4,3,4,4,5,3,5,2],"105":[4,3,3,2,4,3,3,3,2,5,3,3,6,3,3,4,3,3],"106":[4,4,4,4,3,3,3,4,3,3,4,5,5,4,6,3,3,3],"107":[3,4,4,3,3,3,3,4,2,2,2,3,3,4,2,2,3,3],"108":[4,4,5,3,3,3,3,3,3,3,4,4,3,4,3,4,4,4],"109":[3,4,3,3,5,6,3,3,4,3,3,2,4,3,2,3,2,2],"110":[4,3,3,3,3,3,4,3,5,4,4,4,2,4,2,3,3,3],"111":[4,3,3,4,3,3,4,3,4,3,4,3,3,7,3,3,5,3],"112":[3,4,4,3,4,4,5,3,4,4,4,3,5,2,3,4,3,4],"113":[3,4,4,3,4,4,5,3,4,4,4,3,5,2,3,4,3,4],"114":[4,4,3,3,3,3,4,4,4,4,2,3,3,5,4,4,3,3],"115":[3,3,3,5,6,3,4,2,3,3,4,4,3,3,4,3,3,3],"116":[4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],"117":[4,4,3,4,3,4,4,3,4,4,3,3,5,3,4,4,3,4],"118":[4,6,4,6,5,3,3,3,3,3,3,3,3,4,3,3,3,3],"119":[3,3,2,3,6,2,4,3,4,3,3,4,5,4,2,3,3,4],"120":[4,3,4,3,4,2,3,4,3,4,3,3,3,3,3,3,5,6],"121":[4,3,4,3,4,4,3,4,2,4,4,3,3,4,3,3,3,3],"122":[3,4,3,3,3,4,5,3,4,3,3,2,2,3,3,4,4,3],"123":[4,3,3,3,3,3,3,3,3,2,3,2,3,4,3,4,3,2],"124":[4,4,4,4,3,3,4,3,3,5,3,3,4,3,5,3,3,3],"125":[4,3,3,3,5,2,4,3,4,3,3,3,2,3,4,2,3,3],"126":[3,4,3,3,4,3,4,4,4,4,4,4,3,2,4,3,4,6],"127":[4,4,4,3,4,3,3,5,3,3,3,3,6,3,3,4,3,3],"128":[4,3,4,4,3,4,4,6,4,3,5,3,3,5,4,3,3,5],"129":[3,4,4,3,2,3,3,4,3,5,3,3,5,3,3,4,3,3],"130":[4,3,3,4,3,3,3,3,4,3,4,2,4,5,2,2,3,4],"131":[3,3,2,2,3,3,4,5,4,3,4,3,3,2,3,3,3,3],"132":[4,3,4,3,4,3,4,3,3,3,2,3,3,4,3,2,3,5],"133":[3,4,3,3,3,3,2,4,4,4,3,3,3,4,4,3,4,4],"134":[4,3,3,3,3,2,4,5,3,4,3,4,3,5,4,3,4,3],"135":[3,4,3,3,4,3,4,3,4,3,4,3,3,3,3,3,3,3],"136":[4,3,2,3,4,3,4,3,2,3,2,6,2,3,4,3,2,4],"137":[4,4,2,3,6,3,5,2,3,2,6,2,3,3,3,3,3,3],"138":[3,4,4,4,3,3,4,3,3,3,3,3,3,3,3,3,4,4],"139":[3,3,4,3,3,4,4,4,5,3,2,2,2,4,3,2,4,3],"140":[3,3,4,3,2,4,4,6,4,3,3,3,3,3,3,4,3,4],"141":[3,3,4,3,3,2,3,3,3,6,4,3,3,4,3,3,3,4],"142":[5,3,4,4,4,4,3,3,3,3,3,3,2,3,3,3,5,3],"143":[3,3,3,4,5,3,3,4,3,3,3,3,3,4,3,3,4,4],"144":[3,3,3,4,4,3,4,4,4,4,3,3,5,4,4,3,3,4],"145":[4,4,4,3,3,4,4,3,3,3,4,3,3,3,3,3,3,3],"146":[4,3,4,4,4,2,4,3,3,3,3,5,4,4,4,3,4,2],"147":[4,6,4,3,4,3,4,2,4,3,4,4,5,3,3,3,4,5],"148":[4,4,3,3,3,3,3,4,2,3,5,3,3,3,3,3,3,3],"149":[4,4,4,2,4,8,4,4,4,4,3,3,4,3,3,2,4,3],"150":[5,3,3,3,3,2,2,3,4,4,3,3,3,3,3,3,3,3],"151":[5,5,3,6,4,3,3,4,5,3,4,2,2,2,3,5,5,7],"152":[3,4,5,3,5,4,3,3,5,4,6,4,4,2,4,3,2,3],"153":[4,3,3,3,4,4,5,5,3,4,3,2,3,3,2,5,5,3],"154":[3,4,3,4,3,5,3,3,3,8,3,3,5,3,2,3,3,4],"155":[3,4,3,4,3,3,3,4,4,3,3,3,3,4,3,4,2,3],"156":[3,4,3,2,4,3,5,3,3,2,3,3,3,3,3,3,3,3],"157":[4,4,3,4,3,3,5,3,4,3,5,3,3,4,3,5,2,4],"158":[5,5,3,4,3,4,3,3,3,4,4,3,3,4,4,2,3,3],"159":[4,4,3,2,3,2,5,2,3,3,4,3,3,4,2,3,3,4],"160":[3,3,5,3,4,2,3,3,3,3,2,4,3,3,4,3,3,3],"161":[3,4,4,4,3,3,2,5,4,5,3,4,3,4,2,3,3,3],"162":[4,3,3,3,3,3,4,3,3,4,4,3,3,3,3,3,3,4],"163":[4,4,4,4,3,3,3,3,4,4,3,3,3,3,3,3,3,3],"164":[3,4,3,4,3,2,2,3,3,3,4,3,3,4,4,3,3,3],"165":[3,5,4,3,3,4,3,4,5,5,3,5,4,3,3,4,4,3],"166":[3,3,2,2,4,3,3,3,4,2,3,3,5,3,2,3,5,5],"167":[4,3,3,4,4,4,4,4,3,3,3,6,3,4,4,4,4,3],"168":[3,2,5,2,3,3,3,3,3,3,4,4,3,3,3,2,3,4],"169":[2,3,5,3,3,2,3,3,3,6,3,3,4,3,3,4,5,3],"170":[4,3,3,4,4,3,3,3,3,4,2,3,3,2,5,3,2,3],"171":[3,3,2,4,3,3,3,3,3,3,4,4,4,3,3,4,4,4],"172":[3,2,3,4,3,4,5,3,4,3,4,7,4,3,4,5,3,3],"173":[3,3,3,3,3,3,4,4,4,7,4,3,4,3,3,3,3,2],"174":[3,3,4,2,6,4,3,4,3,3,4,2,3,2,3,4,3,2],"175":[4,5,4,3,3,3,4,3,5,3,3,3,3,3,3,3,3,3],"176":[4,3,3,3,3,3,3,3,3,3,2,4,4,3,3,4,3,3],"177":[3,3,3,5,3,3,4,4,4,4,3,3,2,3,5,2,4,3],"178":[4,3,4,4,3,3,4,2,4,4,3,4,5,4,4,4,4,3],"179":[3,3,3,3,4,3,4,3,4,4,3,3,3,3,3,4,3,3],"180":[3,5,4,3,2,2,3,3,3,5,3,2,4,5,3,4,3,3],"181":[3,4,3,3,3,4,3,4,3,4,4,3,3,3,4,3,3,3],"182":[3,3,4,3,3,3,3,3,4,3,3,3,4,4,3,3,4,3],"183":[5,3,5,4,3,3,3,4,5,4,4,3,5,3,2,4,5,3],"184":[5,7,3,3,3,3,3,4,2,3,4,3,3,5,3,3,3,3],"185":[3,4,4,4,3,4,4,2,3,4,4,4,4,3,3,3,3,4],"186":[5,7,3,3,3,3,3,4,2,3,4,3,3,7,3,3,3,3],"187":[3,3,4,3,4,5,3,3,4,3,3,3,4,3,3,3,4,3],"188":[3,4,3,3,3,4,3,5,7,3,4,4,3,5,5,4,3,2],"189":[4,3,4,3,3,3,2,4,2,3,3,4,3,3,2,3,3,2],"190":[4,3,3,4,4,3,4,3,3,4,3,2,5,3,3,4,3,3],"191":[4,4,5,3,3,3,4,2,4,3,5,4,4,3,4,4,5,5],"192":[3,3,3,3,2,3,5,2,3,3,3,7,3,3,3,3,4,4],"193":[4,4,3,4,3,4,3,4,3,3,2,3,3,3,3,4,4,3],"194":[3,3,3,3,4,3,3,4,3,5,3,3,4,3,4,3,5,4],"195":[3,4,3,3,3,3,4,3,4,3,3,3,3,3,3,3,6,3],"196":[3,5,5,4,3,3,3,3,3,4,4,4,4,2,3,4,3,3],"197":[6,3,2,3,3,3,3,5,3,3,4,4,3,4,3,4,4,3],"198":[4,2,4,3,3,4,3,3,4,4,3,4,4,3,4,3,4,3],"199":[4,4,3,3,3,3,3,2,2,2,3,4,3,3,2,3,4,3],"200":[4,3,2,3,3,3,4,3,4,4,3,5,3,3,3,3,3,4],"201":[3,4,3,3,3,3,4,3,3,3,3,5,3,4,3,4,4,2],"202":[4,2,3,3,4,3,2,3,3,3,3,4,3,3,3,3,3,2],"203":[4,3,2,4,2,5,3,3,3,3,3,4,2,4,5,5,3,3],"204":[3,3,4,4,3,4,2,5,3,4,2,4,2,2,3,3,4,4],"205":[3,4,4,3,3,3,3,3,3,5,3,2,3,3,3,3,4,3],"206":[3,4,3,4,2,3,3,3,2,3,3,4,4,3,4,3,3,3],"207":[3,3,3,3,5,4,3,3,3,3,3,4,2,2,5,3,2,5],"208":[4,3,3,3,3,5,4,3,3,4,5,4,3,3,3,3,4,3],"209":[4,4,3,3,3,3,3,3,3,3,4,4,5,4,4,3,3,3],"210":[5,4,3,2,3,3,3,3,2,4,4,3,3,3,3,3,3,3],"211":[4,4,3,4,3,2,3,2,3,3,4,3,3,3,3,4,4,2],"212":[3,4,3,3,3,3,4,3,3,3,3,3,3,3,3,3,3,4],"213":[4,3,4,4,2,3,4,3,3,4,5,3,4,3,2,3,4,3],"214":[5,4,4,3,3,4,4,3,2,4,3,5,3,4,3,4,3,5],"215":[3,5,4,4,3,3,5,4,3,3,4,3,4,5,3,4,2,3],"216":[4,4,4,3,4,3,4,3,4,3,4,4,4,2,2,3,3,3],"217":[3,2,4,4,4,2,3,3,4,4,3,4,3,3,3,4,3,5],"218":[2,5,4,4,3,3,3,4,3,4,3,3,3,3,2,5,3,4],"219":[7,4,3,5,3,6,4,5,3,3,4,3,3,3,6,4,3,3],"220":[2,4,3,3,4,3,3,4,4,3,4,2,4,4,3,3,2,3],"221":[3,4,3,4,4,2,3,4,4,3,3,4,3,4,3,3,3,3],"222":[3,4,3,2,3,3,3,3,2,3,3,3,3,3,3,3,2,3],"223":[4,3,3,5,4,4,4,3,3,3,3,3,4,4,3,5,2,3]};
+var PUTTS_DATA={};
+var BAN_DATA={};
+var OBS_DATA={};
+var PEN_DATA={};
+function normalizeRAW(){var BUN_E="\ud83c\udfd6\ufe0f";var AGUA_E="\ud83d\udca7";var PEN_E=["\ud83c\udf33","\ud83d\udea7","\ud83d\udeab"];for(var i=0;i<RAW.length;i++){var r=RAW[i];var k=String(r.n);var h=HOLES_DATA[k];if(!h||h.length!==18)continue;var sum=0;for(var j=0;j<18;j++)sum+=h[j];r.totalNum=sum-54;r.total=r.totalNum<0?String(r.totalNum):(r.totalNum===0?"PAR":"+"+r.totalNum);r.hi1=h.filter(function(x){return x===1;}).length;r.bir=h.filter(function(x){return x===2;}).length;r.par=h.filter(function(x){return x===3;}).length;r.bog=h.filter(function(x){return x===4;}).length;r.dbl=h.filter(function(x){return x>=5;}).length;var pt=PUTTS_DATA[k],bn=BAN_DATA[k],ob=OBS_DATA[k],pe=PEN_DATA[k];if(pt&&bn&&ob&&pe){var gir=0,p3=0,pm3=0,trip=0,rec=0,sp=0,bun=0,agua=0,pen=0;for(var ii=0;ii<18;ii++){var sc=h[ii],ptt=pt[ii],bnn=bn[ii],obb=ob[ii],pee=pe[ii];var hasGIR=(ptt!==null&&(sc-ptt)===1);if(hasGIR){gir++;if(bnn==="-")p3++;else if(bnn==="+")pm3++;}if(ptt!==null&&ptt>=3)trip++;if(!hasGIR&&sc<=3){if(sc<=2)sp++;else rec++;}if(obb===BUN_E)bun++;if(pee===AGUA_E)agua++;else if(PEN_E.indexOf(pee)>=0)pen++;}r.gir=gir;r.p3=p3;r.pm3=pm3;r.trip=trip;r.rec=rec;r.sp=sp;r.bun=bun;r.agua=agua;r.pen=pen;}}}
+function fmtT(v){return v<0?String(v):v===0?"PAR":"+"+v;}
+function tColor(n){return n<0?"#15803d":n===0?"#6b7280":"#b91c1c";}
+function tBg(n){return n<0?"#65d000":n===0?"#6b7280":"#1e3a8a";}
+function pct(n,t){return((n/t)*100).toFixed(1)+"%";}
+function hBg(h){if(h===null||h===undefined)return null;if(h<=2)return"#65d000";if(h===3)return null;if(h===4)return"#06b6d4";return"#1e3a8a";}
+try{
+  var __full=JSON.parse(localStorage.getItem("pp_extra_rounds_full")||"null");
+  if(Array.isArray(__full)&&__full.length>0){
+    RAW.length=0;
+    for(var __k in HOLES_DATA){if(HOLES_DATA.hasOwnProperty(__k))delete HOLES_DATA[__k];}
+    for(var __k in PUTTS_DATA){if(PUTTS_DATA.hasOwnProperty(__k))delete PUTTS_DATA[__k];}
+    for(var __k in BAN_DATA){if(BAN_DATA.hasOwnProperty(__k))delete BAN_DATA[__k];}
+    for(var __k in OBS_DATA){if(OBS_DATA.hasOwnProperty(__k))delete OBS_DATA[__k];}
+    for(var __k in PEN_DATA){if(PEN_DATA.hasOwnProperty(__k))delete PEN_DATA[__k];}
+    for(var __i=0;__i<__full.length;__i++){var __r=__full[__i];if(__r&&__r.raw&&__r.holes){var __kk=String(__r.raw.n);RAW.push(__r.raw);HOLES_DATA[__kk]=__r.holes;if(__r.putts)PUTTS_DATA[__kk]=__r.putts;if(__r.ban)BAN_DATA[__kk]=__r.ban;if(__r.obs)OBS_DATA[__kk]=__r.obs;if(__r.pen)PEN_DATA[__kk]=__r.pen;}}
+  }
+}catch(__e){}
+try{var __extra=JSON.parse(localStorage.getItem("pp_extra_rounds")||"[]");if(Array.isArray(__extra)){for(var __i=0;__i<__extra.length;__i++){var __r=__extra[__i];if(__r&&__r.raw&&__r.holes){var __k=String(__r.raw.n);RAW.push(__r.raw);HOLES_DATA[__k]=__r.holes;if(__r.putts)PUTTS_DATA[__k]=__r.putts;if(__r.ban)BAN_DATA[__k]=__r.ban;if(__r.obs)OBS_DATA[__k]=__r.obs;if(__r.pen)PEN_DATA[__k]=__r.pen;}}}}catch(__e){}
+normalizeRAW();
+document.getElementById("hdr").textContent="Iron Capi \u2014 "+RAW.length+" rondas \u00b7 Ferran Lob\u00f3n";
+var campos=[...new Set(RAW.map(function(r){return r.campo;}))].sort();
+var selC=document.getElementById("campo-filter");
+campos.forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;selC.appendChild(o);});
+var HEADERS=["J","Fecha","Campo","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","Tot","Bir","Par","Bog","Dbl","GIR","P<3","P>3","3P","Rec","SP","Bun","Agu","Pen","Bol"];
+var COL_W=[28,78,78,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,36,28,28,28,28,28,28,28,28,28,28,28,28,28,28];
+var thead=document.getElementById("thead-row");
+HEADERS.forEach(function(h,i){var th=document.createElement("th");th.textContent=h;th.style.width=COL_W[i]+"px";th.style.minWidth=COL_W[i]+"px";if(i>=3&&i<=20)th.style.background="#e5e7eb";thead.appendChild(th);});
+function renderTable(){
+  var q=document.getElementById("search").value.toLowerCase();var cf=document.getElementById("campo-filter").value;var sort=document.getElementById("sort-sel").value;
+  var data=RAW.filter(function(r){if(cf&&r.campo!==cf)return false;if(q&&!r.campo.toLowerCase().includes(q)&&!r.fecha.includes(q))return false;return true;});
+  data.sort(function(a,b){if(sort==="n-asc")return a.n-b.n;if(sort==="n-desc")return b.n-a.n;if(sort==="total-desc")return a.totalNum-b.totalNum;if(sort==="total-asc")return b.totalNum-a.totalNum;if(sort==="bir-desc")return b.bir-a.bir;return 0;});
+  document.getElementById("count-lbl").textContent=data.length+" rondas";
+  var tbody=document.getElementById("tbody");tbody.innerHTML="";
+  data.forEach(function(r){
+    var holes=HOLES_DATA[r.n]||Array(18).fill(null);var tr=document.createElement("tr");
+    function mkTd(w,val,style){var td=document.createElement("td");td.style.cssText="width:"+w+"px;min-width:"+w+"px;"+(style||"");if(val!==null&&val!==undefined&&val!=="")td.textContent=val;return td;}
+    tr.appendChild(mkTd(28,r.n,"color:#aaa;border-right:1px solid #eee"));
+    tr.appendChild(mkTd(78,r.fecha,"color:#555;border-right:1px solid #eee;text-align:left;padding-left:4px"));
+    tr.appendChild(mkTd(78,r.campo,"background:"+gc(r.campo)+";font-weight:500;border-right:1px solid #ccc;text-align:left;padding-left:4px"));
+    holes.forEach(function(h){var bg=hBg(h);var htd=document.createElement("td");htd.style.cssText="width:22px;min-width:22px;border-right:1px solid #f0f0f0;padding:1px 0;vertical-align:middle";if(h!==null&&h!==undefined&&h!==3&&bg){var d=document.createElement("div");d.style.cssText="width:18px;height:18px;border-radius:50%;background:"+bg+";color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto";d.textContent=h;htd.appendChild(d);}else{htd.style.color=h===null?"#ccc":"#333";htd.style.fontSize="9px";if(h!==null&&h!==undefined)htd.textContent=h;}tr.appendChild(htd);});
+    var totDiv=document.createElement("div");totDiv.style.cssText="background:"+tBg(r.totalNum)+";color:#fff;font-weight:700;font-size:10px;border-radius:5px;padding:2px 3px;text-align:center";totDiv.textContent=fmtT(r.totalNum);var totTd=mkTd(36,null,"border-right:1px solid #ccc;padding:1px 2px");totTd.appendChild(totDiv);tr.appendChild(totTd);
+    [[28,r.bir||0,r.bir>0?"color:#854d0e;background:#fef9c3;font-weight:600":"color:#ccc"],[28,r.par||0,r.par>0?"color:#333":"color:#ccc"],[28,r.bog||0,r.bog>0?"color:#06b6d4":"color:#ccc"],[28,r.dbl||0,r.dbl>0?"color:#1e3a8a;font-weight:700":"color:#ccc"],[28,r.gir||0,r.gir>0?"color:#15803d":"color:#ccc"],[28,(r.p3>0?r.p3:""),r.p3>0?"color:#1d4ed8;background:#eff6ff":"color:#ccc"],[28,(r.pm3>0?r.pm3:""),r.pm3>0?"color:#1d4ed8;background:#eff6ff":"color:#ccc"],[28,r.trip||0,r.trip>0?"color:#7c3aed":"color:#ccc"],[28,((r.rec||0)>0?r.rec:""),((r.rec||0)>0)?"color:#059669;background:#ecfdf5":"color:#ccc"],[28,((r.sp||0)>0?r.sp:""),((r.sp||0)>0)?"color:#d97706;background:#fffbeb":"color:#ccc"],[28,((r.bun||0)>0?r.bun:""),((r.bun||0)>0)?"color:#92400e;background:#fef3c7":"color:#ccc"],[28,((r.agua||0)>0?r.agua:""),((r.agua||0)>0)?"color:#1d4ed8;background:#dbeafe":"color:#ccc"],[28,((r.pen||0)>0?r.pen:""),((r.pen||0)>0)?"color:#b91c1c;background:#fee2e2":"color:#ccc"],[28,((r.bola||0)>0?r.bola:""),((r.bola||0)>0)?"color:#374151;background:#f3f4f6":"color:#ccc"]].forEach(function(s){var td=document.createElement("td");td.style.cssText="width:"+s[0]+"px;min-width:"+s[0]+"px;border-right:1px solid #eee;"+s[2];if(s[1]!=="")td.textContent=s[1];tr.appendChild(td);});
+    tbody.appendChild(tr);
+  });
+}
+document.getElementById("search").addEventListener("input",renderTable);
+document.getElementById("campo-filter").addEventListener("change",renderTable);
+document.getElementById("sort-sel").addEventListener("change",renderTable);
+renderTable();
+function renderStats(){
+  var totalH=RAW.length*18;var totalBir=RAW.reduce(function(s,r){return s+r.bir;},0);var hio=RAW.find(function(r){return r.hi1>0;});
+  var cards=[{icon:"&#128203;",label:"Total partidos",val:RAW.length,sub:"desde "+RAW[0].fecha,bg:"#f0fdf4",color:"#15803d"},{icon:"&#9971;",label:"Total hoyos",val:(RAW.length*18).toLocaleString("es"),sub:"18 x "+RAW.length+" rondas",bg:"#e8f4fd",color:"#1565c0"},{icon:"&#128506;",label:"Campos distintos",val:new Set(RAW.map(function(r){return r.campo;})).size,sub:"campos visitados",bg:"#f5f3ff",color:"#6d28d9"},{icon:"&#128038;",label:"Total birdies",val:totalBir+" ("+((totalBir/totalH)*100).toFixed(1)+"%)",sub:"sobre "+(totalH).toLocaleString("es")+" hoyos",bg:"#fef9c3",color:"#854d0e"},{icon:"&#127942;",label:"Hole in One",val:RAW.reduce(function(s,r){return s+(r.hi1||0);},0),sub:hio?hio.fecha+" - "+hio.campo:"---",bg:"#fef3c7",color:"#92400e"}];
+  document.getElementById("stats-content").innerHTML=cards.map(function(s){return '<div class="card" style="background:'+s.bg+'"><div style="font-size:32px">'+s.icon+'</div><div><div style="font-size:11px;color:#888">'+s.label+'</div><div style="font-size:32px;font-weight:800;color:'+s.color+';line-height:1.1">'+s.val+'</div><div style="font-size:10px;color:#aaa;margin-top:3px">'+s.sub+'</div></div></div>';}).join("");
+}
+function calcWin(N){var win=RAW.slice(-N);var hcp=win.reduce(function(s,r){return s+r.totalNum;},0)/N;return{win:win,hcp:hcp,hcpStr:hcp>=0?"+"+hcp.toFixed(2):hcp.toFixed(2),bir:win.reduce(function(s,r){return s+r.bir;},0),par:win.reduce(function(s,r){return s+r.par;},0),bog:win.reduce(function(s,r){return s+r.bog;},0),dbl:win.reduce(function(s,r){return s+r.dbl;},0),gir:win.reduce(function(s,r){return s+r.gir;},0),trip:win.reduce(function(s,r){return s+r.trip;},0),saliente:RAW[RAW.length-N-1]||null,entrante:RAW[RAW.length-N]||null,r1:win[0].n,r2:win[N-1].n,f1:win[0].fecha,f2:win[N-1].fecha,totalH:N*18};}
+function renderWindow(id,N,color,bg){
+  var d=calcWin(N);var p=function(n){return pct(n,d.totalH);};var h='<div class="win-header" style="background:'+bg+'">';
+  if(d.saliente)h+='<div class="win-side" style="left:12px"><div style="font-size:8px;color:'+color+';font-weight:600;margin-bottom:1px">&larr; sale</div><div style="font-size:17px;font-weight:800;color:'+tColor(d.saliente.totalNum)+'">'+fmtT(d.saliente.totalNum)+'</div><div style="font-size:7px;color:#999">R'+d.saliente.n+'</div><div style="font-size:7px;color:#bbb">'+d.saliente.fecha+'</div></div>';
+  if(d.entrante)h+='<div class="win-side" style="right:12px"><div style="font-size:8px;color:'+color+';font-weight:600;margin-bottom:1px">entra &rarr;</div><div style="font-size:17px;font-weight:800;color:'+tColor(d.entrante.totalNum)+'">'+fmtT(d.entrante.totalNum)+'</div><div style="font-size:7px;color:#999">R'+d.entrante.n+'</div><div style="font-size:7px;color:#bbb">'+d.entrante.fecha+'</div></div>';
+  h+='<div style="font-size:50px;font-weight:800;color:'+color+';line-height:1">'+d.hcpStr+'</div><div style="font-size:12px;color:'+color+';opacity:0.7;margin-top:6px">Handicap &mdash; ultimas '+N+' rondas</div></div>';
+  h+='<div style="font-size:11px;color:#999;margin-bottom:10px">Rondas '+d.r1+'&ndash;'+d.r2+' &middot; '+d.f1+' &rarr; '+d.f2+'</div><div class="grid4">';
+  [{l:"Birdies",n:d.bir,c:"#854d0e",bg:"#fef9c3"},{l:"Pares",n:d.par,c:"#15803d",bg:"#f0fdf4"},{l:"Bogeys",n:d.bog,c:"#c2410c",bg:"#fff7ed"},{l:"Dobles+",n:d.dbl,c:"#991b1b",bg:"#fef2f2"}].forEach(function(s){h+='<div class="stat-box" style="background:'+s.bg+'"><div style="font-size:10px;font-weight:600;color:'+s.c+';margin-bottom:3px">'+s.l+'</div><div style="font-size:20px;font-weight:800;color:'+s.c+'">'+p(s.n)+'</div><div style="font-size:9px;color:#aaa;margin-top:2px">'+s.n+'/'+d.totalH+'</div></div>';});
+  h+='</div><div class="grid4">';
+  [{l:"GIR",n:d.gir,c:"#15803d",bg:"#f0fdf4"},{l:"3P Tripateos",n:d.trip,c:"#7c3aed",bg:"#f5f3ff"}].forEach(function(s){h+='<div class="stat-box" style="background:'+s.bg+'"><div style="font-size:10px;font-weight:600;color:'+s.c+';margin-bottom:3px">'+s.l+'</div><div style="font-size:20px;font-weight:800;color:'+s.c+'">'+p(s.n)+'</div><div style="font-size:9px;color:#aaa;margin-top:2px">'+s.n+'/'+d.totalH+'</div></div>';});
+  h+='</div><div style="border:1px solid #eee;border-radius:8px;overflow:hidden;margin-top:8px"><div style="padding:6px 10px;font-size:10px;font-weight:700;color:#555;border-bottom:1px solid #eee;background:#f8f8f8">Detalle '+N+' rondas</div><table class="mini-table"><thead><tr><th>#</th><th>Fecha</th><th>Campo</th><th>Tot</th><th>Bir</th><th>Par</th><th>Bog</th><th>Dbl</th><th>GIR</th><th>3P</th></tr></thead><tbody>';
+  d.win.forEach(function(r){h+='<tr><td style="color:#bbb">'+r.n+'</td><td style="color:#666">'+r.fecha+'</td><td style="text-align:left;max-width:70px;overflow:hidden;text-overflow:ellipsis">'+r.campo+'</td><td style="font-weight:700;color:'+tColor(r.totalNum)+'">'+fmtT(r.totalNum)+'</td><td style="color:'+(r.bir>0?"#854d0e":"#ddd")+';background:'+(r.bir>0?"#fef9c3":"transparent")+'">'+r.bir+'</td><td style="color:'+(r.par>0?"#333":"#ddd")+'">'+r.par+'</td><td style="color:'+(r.bog>0?"#06b6d4":"#ddd")+'">'+r.bog+'</td><td style="color:'+(r.dbl>0?"#1e3a8a":"#ddd")+';font-weight:'+(r.dbl>0?700:400)+'">'+r.dbl+'</td><td style="color:'+(r.gir>0?"#15803d":"#ddd")+'">'+r.gir+'</td><td style="color:'+(r.trip>0?"#7c3aed":"#ddd")+'">'+r.trip+'</td></tr>';});
+  h+='</tbody></table></div>';document.getElementById(id).innerHTML=h;
+}
+function bestHcp(N){var best=null,bi=null;for(var i=0;i<=RAW.length-N;i++){var h=RAW.slice(i,i+N).reduce(function(s,r){return s+r.totalNum;},0)/N;if(best===null||h<best){best=h;bi=i;}}var w=RAW.slice(bi,bi+N);return{hcpStr:best>=0?"+"+best.toFixed(2):best.toFixed(2),r1:w[0].n,r2:w[N-1].n,f1:w[0].fecha,f2:w[N-1].fecha};}
+function calcBestStat10(fn,higher){var best=null,bi=null;for(var i=0;i<=RAW.length-10;i++){var v=RAW.slice(i,i+10).reduce(function(s,r){return s+fn(r);},0);if(best===null||(higher?v>best:v<best)){best=v;bi=i;}}var w=RAW.slice(bi,bi+10);return{val:best,r1:w[0].n,r2:w[9].n,f1:w[0].fecha};}
+function calcStreak(fn,arr){var a=arr||RAW,max=0,cur=0,bs=null,be=null,cs=null;a.forEach(function(r){if(fn(r)){if(cur===0)cs=r;cur++;if(cur>max){max=cur;bs=cs;be=r;}}else{cur=0;cs=null;}});var cc=0;for(var i=a.length-1;i>=0;i--){if(fn(a[i]))cc++;else break;}return{max:max,bs:bs,be:be,cur:cc};}
+function renderRecords(){
+  var b10=bestHcp(10),b20=bestHcp(20),b30=bestHcp(30);
+  var totals=RAW.map(function(r){return r.totalNum;});var best=Math.min.apply(null,totals);var vals=[...new Set(totals)].sort(function(a,b){return a-b;});var second=vals[1],third=vals[2];
+  var maxBir=Math.max.apply(null,RAW.map(function(r){return r.bir;}));var maxPar=Math.max.apply(null,RAW.map(function(r){return r.par;}));var maxGir=Math.max.apply(null,RAW.map(function(r){return r.gir;}));
+  var maxRec=Math.max.apply(null,RAW.map(function(r){return r.rec||0;}));var maxSP=Math.max.apply(null,RAW.map(function(r){return r.sp||0;}));
+  var hioR=RAW.find(function(r){return r.hi1>0;});var totalHIO=RAW.reduce(function(s,r){return s+(r.hi1||0);},0);
+  var raw25=RAW.filter(function(r){return r.fecha.includes("2025")||r.fecha.includes("2026");});
+  var sSingle=calcStreak(function(r){return r.totalNum<=9;});var sBir=calcStreak(function(r){return r.bir>0;});var sNoDbl=calcStreak(function(r){return r.dbl===0;});var sNoTrip=calcStreak(function(r){return r.trip===0;},raw25);
+  var hsMax=0,hsCur=0,hsBs=null,hsBe=null,hsCs=null;
+  RAW.forEach(function(r){(HOLES_DATA[r.n]||[]).forEach(function(s,hi){if(s<=3){if(hsCur===0)hsCs={r:r,h:hi+1};hsCur++;if(hsCur>hsMax){hsMax=hsCur;hsBs=hsCs;hsBe={r:r,h:hi+1};}}else{hsCur=0;hsCs=null;}});});
+  var hsCC=0;var allH=[];RAW.forEach(function(r){(HOLES_DATA[r.n]||[]).forEach(function(s){allH.push(s);});});for(var i=allH.length-1;i>=0;i--){if(allH[i]<=3)hsCC++;else break;}
+  var bs10={bir:calcBestStat10(function(r){return r.bir;},true),par:calcBestStat10(function(r){return r.par;},true),bog:calcBestStat10(function(r){return r.bog;},false),dbl:calcBestStat10(function(r){return r.dbl;},false),gir:calcBestStat10(function(r){return r.gir;},true),trip:calcBestStat10(function(r){return r.trip;},false)};
+  function fmtRs(rs){return rs.map(function(r){return r.fecha+" - "+r.campo;}).join(" / ");}
+  var h='<div class="section-title">Mejor media 10 rondas consecutivas</div><div class="grid4">';
+  [{l:"Birdies",s:bs10.bir,c:"#854d0e",bg:"#fef9c3"},{l:"Pares",s:bs10.par,c:"#15803d",bg:"#f0fdf4"},{l:"Bogeys",s:bs10.bog,c:"#c2410c",bg:"#fff7ed"},{l:"Dobles+",s:bs10.dbl,c:"#991b1b",bg:"#fef2f2"}].forEach(function(x){h+='<div class="stat-box" style="background:'+x.bg+'"><div style="font-size:10px;font-weight:600;color:'+x.c+';margin-bottom:2px">'+x.l+'</div><div style="font-size:22px;font-weight:800;color:'+x.c+'">'+((x.s.val/180)*100).toFixed(1)+'%</div><div style="font-size:9px;color:#aaa">'+x.s.val+'/180</div><div style="font-size:8px;color:#bbb;margin-top:2px">R'+x.s.r1+'&rarr;R'+x.s.r2+'</div></div>';});
+  h+='</div><div class="grid2">';
+  [{l:"GIR",s:bs10.gir,c:"#15803d",bg:"#f0fdf4"},{l:"Tripateos",s:bs10.trip,c:"#7c3aed",bg:"#f5f3ff"}].forEach(function(x){h+='<div class="stat-box" style="background:'+x.bg+'"><div style="font-size:10px;font-weight:600;color:'+x.c+';margin-bottom:2px">'+x.l+'</div><div style="font-size:22px;font-weight:800;color:'+x.c+'">'+((x.s.val/180)*100).toFixed(1)+'%</div><div style="font-size:9px;color:#aaa">'+x.s.val+'/180</div><div style="font-size:8px;color:#bbb;margin-top:2px">R'+x.s.r1+'&rarr;R'+x.s.r2+'</div></div>';});
+  h+='</div>';
+  var recs=[{ib:"#e3f0fb",ic:"#1565c0",t:"Mejor handicap (10 rondas)",sub:"R"+b10.r1+"&rarr;R"+b10.r2,det:b10.f1+" &rarr; "+b10.f2,val:b10.hcpStr},{ib:"#dce8f8",ic:"#1565c0",t:"Mejor handicap (20 rondas)",sub:"R"+b20.r1+"&rarr;R"+b20.r2,det:b20.f1+" &rarr; "+b20.f2,val:b20.hcpStr},{ib:"#ccdaf5",ic:"#1565c0",t:"Mejor handicap (30 rondas)",sub:"R"+b30.r1+"&rarr;R"+b30.r2,det:b30.f1+" &rarr; "+b30.f2,val:b30.hcpStr},{ib:"#1565c0",ic:"#fff",t:"Racha un digito",sub:"&le;+9"+(sSingle.cur===sSingle.max?" en curso":""),det:sSingle.bs?sSingle.bs.fecha+" &rarr; "+sSingle.be.fecha:"",val:sSingle.max+" partidos",cur:sSingle.cur},{ib:"#f5f5f5",ic:"#333",t:"Racha con birdie",det:sBir.bs?sBir.bs.fecha+" &rarr; "+sBir.be.fecha:"",val:sBir.max+" partidos",cur:sBir.cur},{ib:"#f5f5f5",ic:"#333",t:"Racha sin dobles",det:sNoDbl.bs?sNoDbl.bs.fecha+" &rarr; "+sNoDbl.be.fecha:"",val:sNoDbl.max+" partidos",cur:sNoDbl.cur},{ib:"#f5f5f5",ic:"#333",t:"Racha sin tripateo (2025+)",det:sNoTrip.bs?sNoTrip.bs.fecha+" &rarr; "+sNoTrip.be.fecha:"",val:sNoTrip.max+" partidos",cur:sNoTrip.cur},{ib:"#f0fdf4",ic:"#15803d",t:"Hoyos seguidos par o mejor",sub:hsBs?"R"+hsBs.r.n+" H"+hsBs.h+" &rarr; R"+hsBe.r.n+" H"+hsBe.h+(hsCC===hsMax?" en curso":""):"&mdash;",det:hsBs?hsBs.r.fecha+" &rarr; "+hsBe.r.fecha:"",val:hsMax+" hoyos",cur:hsCC},{ib:"#f5f5f5",ic:"#333",t:"Hole in One",sub:hioR?hioR.fecha+" - "+hioR.campo:"---",val:String(totalHIO)},{ib:"#fef9c3",ic:"#854d0e",t:"Mas birdies",sub:fmtRs(RAW.filter(function(r){return r.bir===maxBir;})),val:maxBir+" birdies"},{ib:"#2e7d32",ic:"#fff",t:"Mas pares",sub:fmtRs(RAW.filter(function(r){return r.par===maxPar;})),val:maxPar+" pares"},{ib:"#e3f0fb",ic:"#1565c0",t:"Mas GIR",sub:fmtRs(RAW.filter(function(r){return r.gir===maxGir;})),val:maxGir+" GIR"}];
+  if(maxRec>0)recs.push({ib:"#f5f5f5",ic:"#333",t:"Mas recuperaciones",sub:fmtRs(RAW.filter(function(r){return(r.rec||0)===maxRec;})),val:maxRec+" rec"});
+  if(maxSP>0)recs.push({ib:"#f5f5f5",ic:"#333",t:"Mas SP",sub:fmtRs(RAW.filter(function(r){return(r.sp||0)===maxSP;})),val:maxSP+" SP"});
+  recs.push({ib:"#f5f5f5",ic:"#333",t:"Mejor resultado",sub:fmtRs(RAW.filter(function(r){return r.totalNum===best;})),val:fmtT(best)},{ib:"#f5f5f5",ic:"#333",t:"2o mejor",sub:fmtRs(RAW.filter(function(r){return r.totalNum===second;})),val:fmtT(second)},{ib:"#f5f5f5",ic:"#333",t:"3er mejor (x"+RAW.filter(function(r){return r.totalNum===third;}).length+")",sub:fmtRs(RAW.filter(function(r){return r.totalNum===third;})),val:fmtT(third)});
+  recs.forEach(function(rec){h+='<div class="rec-row"><div class="rec-icon" style="background:'+rec.ib+';color:'+rec.ic+'">&#9660;</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">'+rec.t+'</div>'+(rec.sub?'<div style="font-size:10px;color:#888;margin-top:1px">'+rec.sub+'</div>':'')+(rec.det?'<div style="font-size:10px;color:#aaa;margin-top:1px">'+rec.det+'</div>':'')+'</div><div style="font-weight:700;font-size:14px;color:'+(rec.val.startsWith("-")?"#1a7f4b":"#1a1a1a")+';flex-shrink:0;text-align:right;margin-left:12px">'+rec.val+(rec.cur!==undefined&&rec.cur!==parseInt(rec.val)?'<div style="font-size:10px;color:#bbb;font-weight:400;margin-top:2px">actual: '+rec.cur+'</div>':'')+'</div></div>';});
+  document.getElementById("records-content").innerHTML=h;
+}
+function renderComandos(){
+  var lastR=RAW[RAW.length-1];
+  var PRO="Fecha: DD/MM/AAAA\nCampo: NOMBRE_CAMPO\nTotal: +X\nHoyos H1-H18: h1,...,h18\nPutts H1-H18: p1,...,p18\nBirdies (bir): X\nPares (par): X\nBogeys (bog): X\nDobles+ (dbl): X\nGIR total: X\nP<3m (p3): X\nP>3m (pm3): X\nTriputts (trip): X\nRecuperaciones (rec): X\nSP/Super rec (sp): X\nBunker (bun): X\nAgua (agua): X\nPenalidad (pen): X\nBola perdida (bola): X";
+  var h='<div style="background:linear-gradient(135deg,#dc2626,#991b1b);border-radius:10px;padding:16px 20px;margin-bottom:16px;color:#fff"><div style="font-size:18px;font-weight:800;margin-bottom:4px">Comandos y Protocolo</div><div style="font-size:11px;opacity:0.85">Iron Capi &middot; '+RAW.length+' rondas &middot; R'+lastR.n+' '+lastR.fecha+' '+lastR.campo+'</div></div>';
+  h+='<button id="excel-maestro-btn" type="button" style="width:100%;border:2px solid #16a34a;border-radius:10px;margin-bottom:14px;overflow:hidden;background:#fff;cursor:pointer;padding:0;display:block;text-align:left;font-family:inherit"><div style="background:#f0fdf4;padding:10px 14px;border-bottom:1px solid #86efac"><span style="font-weight:700;font-size:13px;color:#16a34a">EXPORTAR EXCEL MAESTRO</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2;color:#333">Pulsa para descargar el Excel maestro con las 16 hojas (datos + specs + validaciones)</div></button>';
+  h+='<button id="export-json-btn" type="button" style="width:100%;border:2px solid #2563eb;border-radius:10px;margin-bottom:14px;overflow:hidden;background:#fff;cursor:pointer;padding:0;display:block;text-align:left;font-family:inherit"><div style="background:#eff6ff;padding:10px 14px;border-bottom:1px solid #93c5fd"><span style="font-weight:700;font-size:13px;color:#2563eb">EXPORTAR JSON (BACKUP)</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2;color:#333">Descarga ironcapi_YYYYMMDD.json con RAW + HOLES + PUTTS + BAN + OBS + PEN (datos base + tarjetas nuevas fusionados)</div></button>';
+  h+='<button id="import-json-btn" type="button" style="width:100%;border:2px solid #ea580c;border-radius:10px;margin-bottom:14px;overflow:hidden;background:#fff;cursor:pointer;padding:0;display:block;text-align:left;font-family:inherit"><div style="background:#fff7ed;padding:10px 14px;border-bottom:1px solid #fdba74"><span style="font-weight:700;font-size:13px;color:#ea580c">IMPORTAR JSON (RESTAURAR)</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2;color:#333">Carga un JSON previamente exportado y restaura toda la BDD en localStorage. Util para mover entre dispositivos.</div></button>';
+  h+='<input type="file" id="import-json-file" accept=".json,application/json" style="display:none">';
+  h+='<div style="border:2px solid #dc2626;border-radius:10px;margin-bottom:14px;overflow:hidden"><div style="background:#fff0f0;padding:10px 14px;border-bottom:1px solid #fca5a5"><span style="font-weight:700;font-size:13px;color:#dc2626">FLUJO NUEVA CONVERSACION</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2">Paso 1 &mdash; Sube el JSX o HTML<br>Paso 2 &mdash; Claude pide la tarjeta<br>Paso 3 &mdash; Pegas la tarjeta<br>Paso 4 &mdash; Claude entrega JSX + HTML + Excel</div></div>';
+  h+='<div style="border:1px solid #fde68a;border-radius:10px;margin-bottom:12px;overflow:hidden"><div style="background:#fef9c3;padding:9px 14px;border-bottom:1px solid #fde68a"><span style="font-weight:700;font-size:12px;color:#854d0e">PLANTILLA TARJETA</span></div><div style="padding:10px 14px;background:#fff"><pre id="tpl-pre" style="color:#333;background:#f8f8f8;padding:10px;border-radius:6px;white-space:pre-wrap"></pre><button id="cpbtn" style="font-size:10px;padding:4px 12px;border:1px solid #ccc;border-radius:4px;cursor:pointer;background:#f8f8f8;margin-top:6px">Copiar plantilla</button></div></div>';
+  h+='<div style="border:1px solid #c7d2fe;border-radius:10px;margin-bottom:12px;overflow:hidden"><div style="background:#eef2ff;padding:9px 14px;border-bottom:1px solid #c7d2fe"><span style="font-weight:700;font-size:12px;color:#4338ca">EXCEL MAESTRO</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:1.7">Comando: escribe <b>EXCEL MAESTRO</b> y Claude genera Excel con 5 hojas (Rondas, Hoyos, Campos, Resumen, Metadata) con todos los datos para reconstruir el artefacto desde cero.</div></div>';
+  h+='<div style="border:1px solid #e0e8f0;border-radius:10px;overflow:hidden"><div style="background:#f0f4ff;padding:9px 14px;border-bottom:1px solid #c7d7f0"><span style="font-weight:700;font-size:12px;color:#1e3a8a">ESTADO</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2"><b>Rondas:</b> '+RAW.length+' (R1&rarr;R'+lastR.n+')<br><b>Periodo:</b> '+RAW[0].fecha+' &rarr; '+lastR.fecha+'<br><b>Ultima:</b> R'+lastR.n+' &middot; '+lastR.fecha+' &middot; '+lastR.campo+' &middot; '+fmtT(lastR.totalNum)+'<br><b>Campos:</b> '+new Set(RAW.map(function(r){return r.campo;})).size+'</div></div>';
+  document.getElementById("comandos-content").innerHTML=h;
+  document.getElementById("tpl-pre").textContent=PRO;
+  document.getElementById("cpbtn").addEventListener("click",function(){navigator.clipboard.writeText(PRO).then(function(){var b=document.getElementById("cpbtn");b.textContent="Copiado!";setTimeout(function(){b.textContent="Copiar plantilla";},1500);});});
+  document.getElementById("excel-maestro-btn").addEventListener("click",exportarExcelMaestro);
+  document.getElementById("export-json-btn").addEventListener("click",exportarJSON);
+  document.getElementById("import-json-btn").addEventListener("click",function(){document.getElementById("import-json-file").click();});
+  document.getElementById("import-json-file").addEventListener("change",importarJSON);
+}
+var rendered={stats:false,records:false,last10:false,last20:false,last30:false,comandos:false};
+document.querySelectorAll(".tab").forEach(function(tab){
+  tab.addEventListener("click",function(){
+    document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("active");});
+    tab.classList.add("active");var name=tab.dataset.tab;
+    document.querySelectorAll("[id^='pane-']").forEach(function(p){p.style.display="none";});
+    document.getElementById("pane-"+name).style.display="";
+    if(name==="stats"&&!rendered.stats){renderStats();rendered.stats=true;}
+    if(name==="records"&&!rendered.records){renderRecords();rendered.records=true;}
+    if(name==="last10"&&!rendered.last10){renderWindow("last10-content",10,"#1565c0","#e8f4fd");rendered.last10=true;}
+    if(name==="last20"&&!rendered.last20){renderWindow("last20-content",20,"#0e7490","#ecfeff");rendered.last20=true;}
+    if(name==="last30"&&!rendered.last30){renderWindow("last30-content",30,"#0f766e","#f0fdfa");rendered.last30=true;}
+    if(name==="comandos"&&!rendered.comandos){renderComandos();rendered.comandos=true;}
+  });
+});
+
+function exportarExcelMaestro(){
+  if(typeof XLSX==="undefined"){alert("SheetJS no esta cargado. Necesitas conexion a internet la primera vez para que el navegador descargue la libreria.");return;}
+  var btn=document.getElementById("excel-maestro-btn");
+  var oldHTML=btn.innerHTML;
+  btn.innerHTML='<div style="background:#fef3c7;padding:14px;text-align:center;font-weight:700;color:#92400e;font-size:13px">Generando Excel...</div>';
+  setTimeout(function(){
+    try{ generarExcel(); btn.innerHTML='<div style="background:#dcfce7;padding:14px;text-align:center;font-weight:700;color:#15803d;font-size:13px">Excel descargado!</div>'; setTimeout(function(){btn.innerHTML=oldHTML;},1800); }
+    catch(e){ btn.innerHTML='<div style="background:#fee2e2;padding:14px;text-align:center;font-weight:700;color:#991b1b;font-size:12px">Error: '+e.message+'</div>'; setTimeout(function(){btn.innerHTML=oldHTML;},3000); }
+  },50);
+}
+
+function exportarJSON(){
+  var btn=document.getElementById("export-json-btn");
+  var oldHTML=btn.innerHTML;
+  try{
+    var payload={
+      version:1,
+      exported_at:new Date().toISOString(),
+      total_rounds:RAW.length,
+      RAW:RAW,
+      HOLES_DATA:HOLES_DATA,
+      PUTTS_DATA:PUTTS_DATA,
+      BAN_DATA:BAN_DATA,
+      OBS_DATA:OBS_DATA,
+      PEN_DATA:PEN_DATA
+    };
+    var jsonStr=JSON.stringify(payload,null,2);
+    var d=new Date();
+    var YYYY=d.getFullYear(),MM=String(d.getMonth()+1).padStart(2,"0"),DD=String(d.getDate()).padStart(2,"0");
+    var fname="ironcapi_"+YYYY+MM+DD+".json";
+    var blob=new Blob([jsonStr],{type:"application/json"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url;a.download=fname;document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},100);
+    btn.innerHTML='<div style="background:#dbeafe;padding:14px;text-align:center;font-weight:700;color:#1e40af;font-size:13px">JSON descargado!</div>';
+    setTimeout(function(){btn.innerHTML=oldHTML;},1800);
+  }catch(e){
+    btn.innerHTML='<div style="background:#fee2e2;padding:14px;text-align:center;font-weight:700;color:#991b1b;font-size:12px">Error: '+e.message+'</div>';
+    setTimeout(function(){btn.innerHTML=oldHTML;},3000);
+  }
+}
+
+function importarJSON(ev){
+  var btn=document.getElementById("import-json-btn");
+  var oldHTML=btn.innerHTML;
+  var file=ev.target.files&&ev.target.files[0];
+  if(!file){return;}
+  if(!confirm("Esto sobrescribira la BDD actual con el contenido del JSON.\n\nSe recomienda hacer EXPORTAR JSON antes como backup.\n\nContinuar?")){
+    ev.target.value="";return;
+  }
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!data||!Array.isArray(data.RAW)||!data.HOLES_DATA){
+        throw new Error("JSON invalido: faltan RAW o HOLES_DATA");
+      }
+      var extras=[];
+      for(var i=0;i<data.RAW.length;i++){
+        var r=data.RAW[i];
+        var k=String(r.n);
+        var entry={raw:r,holes:data.HOLES_DATA[k]};
+        if(data.PUTTS_DATA&&data.PUTTS_DATA[k])entry.putts=data.PUTTS_DATA[k];
+        if(data.BAN_DATA&&data.BAN_DATA[k])entry.ban=data.BAN_DATA[k];
+        if(data.OBS_DATA&&data.OBS_DATA[k])entry.obs=data.OBS_DATA[k];
+        if(data.PEN_DATA&&data.PEN_DATA[k])entry.pen=data.PEN_DATA[k];
+        extras.push(entry);
+      }
+      localStorage.setItem("pp_extra_rounds_full",JSON.stringify(extras));
+      localStorage.setItem("pp_extra_rounds","[]");
+      btn.innerHTML='<div style="background:#dcfce7;padding:14px;text-align:center;font-weight:700;color:#15803d;font-size:13px">Importado! Recargando...</div>';
+      setTimeout(function(){location.reload();},1200);
+    }catch(err){
+      btn.innerHTML='<div style="background:#fee2e2;padding:14px;text-align:center;font-weight:700;color:#991b1b;font-size:12px">Error: '+err.message+'</div>';
+      setTimeout(function(){btn.innerHTML=oldHTML;},3500);
+    }
+    ev.target.value="";
+  };
+  reader.onerror=function(){
+    btn.innerHTML='<div style="background:#fee2e2;padding:14px;text-align:center;font-weight:700;color:#991b1b;font-size:12px">Error leyendo archivo</div>';
+    setTimeout(function(){btn.innerHTML=oldHTML;},3000);
+    ev.target.value="";
+  };
+  reader.readAsText(file);
+}
+
+function generarExcel(){
+  var wb=XLSX.utils.book_new();
+  var d=new Date();
+  var YYYY=d.getFullYear(),MM=String(d.getMonth()+1).padStart(2,"0"),DD=String(d.getDate()).padStart(2,"0");
+  var fechaGen=DD+"/"+MM+"/"+YYYY;
+  var lastR=RAW[RAW.length-1], firstR=RAW[0];
+
+  // ===== 00_LEEME =====
+  var s00=XLSX.utils.aoa_to_sheet([
+    ["THE IRON CAPI - EXCEL MAESTRO"],
+    [""],
+    ["Ferran Lobon - Pitch & Putt modalidad Catalunya (par 54)"],
+    ["Generado: "+fechaGen],
+    ["Total rondas: "+RAW.length+" (R1="+firstR.fecha+" -> R"+lastR.n+"="+lastR.fecha+")"],
+    [""],
+    ["ESTRUCTURA DE HOJAS:"],
+    ["00_LEEME              Esta hoja, indice general"],
+    ["01_Datos_Rondas       Datos por ronda (20 campos), derivables con FORMULAS"],
+    ["02_Datos_Hoyos        FUENTE DE VERDAD: scores crudos h1..h18 por ronda"],
+    ["03_Datos_Campos       Nombre campo + color hex"],
+    ["04_Spec_Estructura    Estructura HTML/UI"],
+    ["05_Spec_Estilos       CSS literal"],
+    ["06_Spec_Tabla         Especificacion tab Tabla"],
+    ["07_Spec_Stats         Especificacion tab Stats"],
+    ["08_Spec_Records       Especificacion tab Records"],
+    ["09_Spec_Last10_20_30  Especificacion tabs Last N"],
+    ["10_Spec_Comandos      Especificacion tab Comandos"],
+    ["11_Logica_Handicap    Calculo handicap rolling"],
+    ["12_Logica_Stats       Definiciones P<3m, P>3m, REC, SP, GIR, etc."],
+    ["13_Logica_Colores     Hex codes para scores y campos"],
+    ["14_Protocolo_Tarjeta  Plantilla 19 campos y flujo nueva ronda"],
+    ["99_Validaciones       Valores golden para verificar reconstruccion"],
+    [""],
+    ["MODELO HIBRIDO:"],
+    ["- Hoja 02 (hoyos crudos) = fuente de verdad"],
+    ["- Hoja 01: derivables (total, totalNum, hi1, bir, par, bog, dbl) con FORMULAS apuntando a hoja 02"],
+    ["- No-derivables (n, fecha, campo, gir, trip, p3, pm3, rec, sp, bun, agua, pen, bola) hardcoded"],
+    [""],
+    ["RECONSTRUCCION:"],
+    ["Para regenerar el HTML desde cero en una conversacion nueva, leer todas las hojas Spec/Logica/Protocolo"],
+    ["y aplicarlas a los datos de 01/02/03. Verificar contra 99_Validaciones."]
+  ]);
+  XLSX.utils.book_append_sheet(wb,s00,"00_LEEME");
+
+  // ===== 01_Datos_Rondas =====
+  var hdr01=["n","fecha","campo","total","totalNum","hi1","bir","par","bog","dbl","gir","trip","p3","pm3","rec","sp","bun","agua","pen","bola"];
+  var rows01=[hdr01];
+  for(var i=0;i<RAW.length;i++){
+    var r=RAW[i];
+    rows01.push([r.n,r.fecha,r.campo,null,null,null,null,null,null,null,
+      r.gir!=null?r.gir:"",r.trip!=null?r.trip:"",r.p3!=null?r.p3:"",r.pm3!=null?r.pm3:"",
+      r.rec!=null?r.rec:"",r.sp!=null?r.sp:"",r.bun!=null?r.bun:"",r.agua!=null?r.agua:"",
+      r.pen!=null?r.pen:"",r.bola!=null?r.bola:""]);
+  }
+  var ws01=XLSX.utils.aoa_to_sheet(rows01);
+  // Formulas derivables: D=total, E=totalNum, F=hi1, G=bir, H=par, I=bog, J=dbl
+  for(var i=0;i<RAW.length;i++){
+    var rx=i+2;
+    var rng="'02_Datos_Hoyos'!B"+rx+":S"+rx;
+    ws01["E"+rx]={t:"n",f:"SUM("+rng+")-54"};
+    ws01["D"+rx]={t:"s",f:'IF(E'+rx+'<0,""&E'+rx+',IF(E'+rx+'=0,"PAR","+"&E'+rx+'))'};
+    ws01["F"+rx]={t:"n",f:"COUNTIF("+rng+",1)"};
+    ws01["G"+rx]={t:"n",f:"COUNTIF("+rng+",2)"};
+    ws01["H"+rx]={t:"n",f:"COUNTIF("+rng+",3)"};
+    ws01["I"+rx]={t:"n",f:"COUNTIF("+rng+",4)"};
+    ws01["J"+rx]={t:"n",f:'COUNTIF('+rng+',">=5")'};
+    // Cachear el valor (v) para que se vea en visores que no recalculan
+    var r=RAW[i];
+    ws01["E"+rx].v=r.totalNum;
+    ws01["D"+rx].v=r.total;
+    ws01["F"+rx].v=r.hi1||0;
+    ws01["G"+rx].v=r.bir||0;
+    ws01["H"+rx].v=r.par||0;
+    ws01["I"+rx].v=r.bog||0;
+    ws01["J"+rx].v=r.dbl||0;
+  }
+  ws01["!cols"]=[{wch:5},{wch:11},{wch:18},{wch:6},{wch:9},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5},{wch:5}];
+  XLSX.utils.book_append_sheet(wb,ws01,"01_Datos_Rondas");
+
+  // ===== 02_Datos_Hoyos =====
+  var hdr02=["n","h1","h2","h3","h4","h5","h6","h7","h8","h9","h10","h11","h12","h13","h14","h15","h16","h17","h18"];
+  var rows02=[hdr02];
+  for(var i=0;i<RAW.length;i++){
+    var n=RAW[i].n, h=HOLES_DATA[String(n)]||[];
+    var row=[n];
+    for(var j=0;j<18;j++) row.push(h[j]!=null?h[j]:"");
+    rows02.push(row);
+  }
+  var ws02=XLSX.utils.aoa_to_sheet(rows02);
+  ws02["!cols"]=[{wch:5}];
+  for(var k=0;k<18;k++) ws02["!cols"].push({wch:4});
+  XLSX.utils.book_append_sheet(wb,ws02,"02_Datos_Hoyos");
+
+  // ===== 03_Datos_Campos =====
+  var rows03=[["nombre","color_hex"]];
+  for(var k in CAMPO_COLORS){if(CAMPO_COLORS.hasOwnProperty(k)) rows03.push([k,CAMPO_COLORS[k]]);}
+  var ws03=XLSX.utils.aoa_to_sheet(rows03);
+  ws03["!cols"]=[{wch:24},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,ws03,"03_Datos_Campos");
+
+  // ===== 04_Spec_Estructura =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["ESTRUCTURA HTML"],[""],
+    ["DOCTYPE html, lang=es, charset UTF-8, viewport mobile"],
+    [""],["HEADER FIJO (sticky top:0):"],
+    ["- h1 con icono y total rondas dinamico"],
+    ["- 8 tabs horizontal scroll: Nueva (+), Tabla, Stats, Records, Last10, Last20, Last30, Comandos"],
+    ["- Cada tab tiene su color via CSS variable --tc"],
+    [""],["PANES (uno por tab, todos display:none excepto activo):"],
+    ["- pane-nueva: tarjeta interactiva, formulario hoyo a hoyo"],
+    ["- pane-tabla: tabla scrollable con todas las rondas, sticky header"],
+    ["- pane-stats: cards de estadisticas + grafico"],
+    ["- pane-records: top scores, mejores rachas, hoyos en uno"],
+    ["- pane-last10/20/30: handicap rolling y stats ventana"],
+    ["- pane-comandos: protocolo, plantilla, estado, boton EXCEL MAESTRO"],
+    [""],["DATOS embebidos en JS:"],
+    ["var RAW = [...]          array de rondas (no-derivables hardcoded)"],
+    ["var HOLES_DATA = {...}   diccionario n -> [h1..h18]"],
+    ["var CAMPO_COLORS = {...} nombre -> hex"],
+    ["var PUTTS_DATA, BAN_DATA, OBS_DATA, PEN_DATA  vacios al inicio, se rellenan con tarjetas nuevas"],
+    [""],["LAZY RENDER: cada tab se renderiza al primer click"],
+    ["var rendered={stats:false,records:false,last10:false,last20:false,last30:false,comandos:false}"],
+    [""],["normalizeRAW() recalcula derivables al cargar y tras cada tarjeta nueva"]
+  ]),"04_Spec_Estructura");
+
+  // ===== 05_Spec_Estilos =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["CSS LITERAL CLAVE"],[""],
+    ["*{box-sizing:border-box;margin:0;padding:0}"],
+    ["body{font-family:system-ui,sans-serif;font-size:13px;color:#333;background:#fff}"],
+    [".tab{padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;color:#888}"],
+    [".tab.active{color:var(--tc);border-bottom-color:var(--tc)}"],
+    [".controls{display:flex;gap:6px;padding:8px 14px;border-bottom:1px solid #ddd;sticky;top:75px}"],
+    [".wrap{overflow:auto;max-height:calc(100vh - 130px)}"],
+    ["table{border-collapse:collapse;font-size:10px;table-layout:fixed}"],
+    ["th{padding:4px 3px;font-weight:600;background:#d8e4f0;border-bottom:2px solid #b0c8e0;sticky;top:0}"],
+    ["td{border-bottom:1px solid #eee;padding:2px;text-align:center}"],
+    [".card{background:#f8f8f8;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:16px}"],
+    [".grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}"],
+    [".grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}"],
+    [".stat-box{border-radius:10px;padding:10px 12px}"],
+    [".rec-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;border-radius:8px;border:1px solid #e8e8e8}"],
+    [".section{padding:14px 18px;max-width:980px}"],
+    [".mini-table{width:100%;border-collapse:collapse;font-size:10px;border:1px solid #eee}"]
+  ]),"05_Spec_Estilos");
+
+  // ===== 06_Spec_Tabla =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["TAB TABLA - ESPECIFICACION"],[""],
+    ["Columnas (orden):"],
+    ["1. n          Numero de ronda"],
+    ["2. Fecha      DD/MM/AAAA"],
+    ["3. Campo      Texto, fondo con color CAMPO_COLORS"],
+    ["4. Total      Texto: -X verde, PAR/E gris, +X rojo (ver hoja 13)"],
+    ["5-22. h1..h18 Score por hoyo, fondo segun valor (ver hoja 13)"],
+    ["23. bir, 24. par, 25. bog, 26. dbl"],
+    ["27. gir, 28. trip"],
+    ["29. p3, 30. pm3, 31. rec, 32. sp"],
+    ["33. bun, 34. agua, 35. pen, 36. bola"],
+    [""],["Sort default: n DESC (mas reciente primero)"],
+    ["Sticky header (th sticky top:0)"],
+    ["Scroll horizontal y vertical"],
+    [""],["Filtros: campo, rango fechas, total"]
+  ]),"06_Spec_Tabla");
+
+  // ===== 07_Spec_Stats =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["TAB STATS - ESPECIFICACION"],[""],
+    ["Cards principales (grid 4 cols):"],
+    ["- Total rondas"],
+    ["- Mejor score (min totalNum, mostrar n y fecha)"],
+    ["- Score promedio = SUM(totalNum)/RAW.length"],
+    ["- Handicap actual = media de los ultimos 10 totalNum"],
+    [""],["Distribucion scores: bir/par/bog/dbl en porcentajes"],
+    ["Rendimiento por campo: top 5 mas jugados con score promedio"],
+    ["Evolucion: grafico linea handicap rolling 10/20/30 a lo largo del tiempo"]
+  ]),"07_Spec_Stats");
+
+  // ===== 08_Spec_Records =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["TAB RECORDS - ESPECIFICACION"],[""],
+    ["Mejor ronda historica: minimo totalNum (mostrar n, fecha, campo, total)"],
+    ["Mejor handicap 10 historico: ventana movil que minimiza la media (mostrar rango n)"],
+    ["Mejor handicap 20 historico: idem con N=20"],
+    ["Mejor handicap 30 historico: idem con N=30"],
+    [""],["Mas birdies en una ronda"],
+    ["Mas hoyos en uno acumulados"],
+    ["Mejor racha de pares consecutivos"],
+    [""],["Por campo: mejor score historico en cada campo jugado"]
+  ]),"08_Spec_Records");
+
+  // ===== 09_Spec_Last10_20_30 =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["TABS LAST N - ESPECIFICACION"],[""],
+    ["Ventanas N rondas mas recientes (N=10, 20, 30):"],
+    [""],
+    ["Header: Handicap = media aritmetica totalNum ultimas N rondas"],
+    [""],
+    ["Sale/Entra:"],
+    ["- sale = RAW[length-N-1]   (la que saldra al añadir una nueva ronda)"],
+    ["- entra = RAW[length-N]    (la oldest actualmente DENTRO de la ventana)"],
+    [""],
+    ["Stats agregadas dentro de la ventana:"],
+    ["- Sumas: bir, par, bog, dbl, gir, trip, p3, pm3, rec, sp"],
+    ["- Mejor y peor ronda en la ventana"],
+    [""],
+    ["Color tab: Last10=#1565c0, Last20=#0e7490, Last30=#0f766e"]
+  ]),"09_Spec_Last10_20_30");
+
+  // ===== 10_Spec_Comandos =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["TAB COMANDOS - ESPECIFICACION"],[""],
+    ["Bloques verticales en este orden:"],
+    ["1. Header rojo gradient (135deg #dc2626 -> #991b1b)"],
+    ["   Titulo 'Comandos y Protocolo' + subtitulo con count rondas + ultima ronda"],
+    [""],
+    ["2. BOTON VERDE 'EXPORTAR EXCEL MAESTRO'"],
+    ["   border:2px solid #16a34a, header bg:#f0fdf4, text:#16a34a"],
+    ["   Al pulsar: genera Excel 15 hojas con SheetJS embebida via CDN y descarga"],
+    [""],
+    ["3. Caja roja FLUJO NUEVA CONVERSACION"],
+    ["   border:2px solid #dc2626, 4 pasos del protocolo"],
+    [""],
+    ["4. Caja amarilla PLANTILLA TARJETA"],
+    ["   border:#fde68a, contiene <pre> con plantilla 19 campos + boton copiar"],
+    [""],
+    ["5. Caja indigo EXCEL MAESTRO (descripcion comando texto Claude)"],
+    [""],
+    ["6. Caja azul ESTADO con: rondas, periodo, ultima, num campos"]
+  ]),"10_Spec_Comandos");
+
+  // ===== 11_Logica_Handicap =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["LOGICA HANDICAP"],[""],
+    ["Handicap rolling N = media aritmetica de los totalNum de las ultimas N rondas"],
+    [""],
+    ["Pseudocodigo:"],
+    ["function rollingHandicap(N){"],
+    ["  if (RAW.length < N) return null;"],
+    ["  var slice = RAW.slice(-N);"],
+    ["  var sum = slice.reduce(function(a,r){return a+r.totalNum;}, 0);"],
+    ["  return sum / N;"],
+    ["}"],
+    [""],
+    ["Best handicap historico ventana N:"],
+    ["function bestHandicap(N){"],
+    ["  if (RAW.length < N) return null;"],
+    ["  var best=Infinity, idx=0;"],
+    ["  for(var i=0; i<=RAW.length-N; i++){"],
+    ["    var s=0; for(var j=i;j<i+N;j++) s+=RAW[j].totalNum;"],
+    ["    var avg=s/N; if(avg<best){best=avg; idx=i;}"],
+    ["  }"],
+    ["  return {avg:best, fromN:RAW[idx].n, toN:RAW[idx+N-1].n};"],
+    ["}"],
+    [""],
+    ["Sale/Entra para tab Last N:"],
+    ["sale  = RAW[RAW.length - N - 1]  (saldra al añadir la siguiente ronda)"],
+    ["entra = RAW[RAW.length - N]      (oldest actualmente DENTRO de la ventana)"]
+  ]),"11_Logica_Handicap");
+
+  // ===== 12_Logica_Stats =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["LOGICA STATS - DEFINICIONES"],[""],
+    ["HI1 (hole in one)         = score === 1"],
+    ["BIR (birdie)              = score === 2"],
+    ["PAR                       = score === 3"],
+    ["BOG (bogey)               = score === 4"],
+    ["DBL+ (doble bogey o peor) = score >= 5"],
+    [""],
+    ["GIR (Green In Regulation) = score - putts == 1 (llego al green con un solo golpe)"],
+    [""],
+    ["BAN_DATA marca distancia al pin tras GIR:"],
+    ["  '-' = a menos de 3m"],
+    ["  '+' = a mas de 3m"],
+    ["  null = no hubo GIR"],
+    [""],
+    ["P3  (P<3m) = greens en regulacion donde la bola quedo a menos de 3m del hoyo"],
+    ["PM3 (P>3m) = greens en regulacion donde la bola quedo a mas de 3m del hoyo"],
+    [""],
+    ["TRIP (triputts) = putts en el hoyo >= 3"],
+    [""],
+    ["REC (recuperacion)        = par sin GIR (score==3 y NO GIR)"],
+    ["SP  (super recuperacion)  = birdie sin GIR (score<=2 y NO GIR)"],
+    [""],
+    ["BUN  (bunker)        = en OBS_DATA, hoyos con emoji bunker (\\ud83c\\udfd6\\ufe0f)"],
+    ["AGUA                 = en PEN_DATA, hoyos con emoji agua (\\ud83d\\udca7)"],
+    ["PEN  (penalidad otra) = otros hazards (\\ud83c\\udf33,\\ud83d\\udea7,\\ud83d\\udeab)"],
+    ["BOLA (bola perdida)  = se trackea aparte"]
+  ]),"12_Logica_Stats");
+
+  // ===== 13_Logica_Colores =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["LOGICA COLORES"],[""],
+    ["SCORES (color de fondo del badge):"],
+    ["score=1   bg:#d63031 text:#ffdd57   (hoyo en uno, rojo+amarillo)"],
+    ["score=2   bg:#00b894 text:#ffffff   (eagle/birdie, verde)"],
+    ["score=3   bg:#fdf8e1 text:#1a1a2e   (par, crema)"],
+    ["score=4   bg:#74b9ff text:#0056b3   (bogey, cyan claro)"],
+    ["score>=5  bg:#0984e3 text:#ffffff   (doble+, azul)"],
+    [""],
+    ["TABLA hBg() simplificado (background tabla):"],
+    ["score<=2  -> #65d000 (verde brillante)"],
+    ["score==3  -> sin color (neutro)"],
+    ["score==4  -> #06b6d4 (cyan)"],
+    ["score>=5  -> #1e3a8a (azul oscuro)"],
+    [""],
+    ["TOTAL badges:"],
+    ["totalNum<0   verde #15803d (bg #65d000)"],
+    ["totalNum==0  gris #6b7280 'PAR'/'E'"],
+    ["totalNum>0   rojo #b91c1c (bg #1e3a8a) formato '+X'"],
+    [""],
+    ["TABS (CSS variable --tc):"],
+    ["Nueva    #00a896"],
+    ["Tabla    #1a7f4b"],
+    ["Stats    #6d28d9"],
+    ["Records  #b8860b"],
+    ["Last10   #1565c0"],
+    ["Last20   #0e7490"],
+    ["Last30   #0f766e"],
+    ["Comandos #dc2626"],
+    [""],
+    ["BOTON Excel Maestro (verde):"],
+    ["border:2px solid #16a34a, header bg:#f0fdf4 border-bottom:#86efac, text:#16a34a"],
+    [""],
+    ["CAMPO COLORS: ver hoja 03_Datos_Campos"]
+  ]),"13_Logica_Colores");
+
+  // ===== 14_Protocolo_Tarjeta =====
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["PROTOCOLO TARJETA - PLANTILLA 19 CAMPOS"],[""],
+    ["Fecha: DD/MM/AAAA"],
+    ["Campo: NOMBRE_CAMPO"],
+    ["Total: +X"],
+    ["Hoyos H1-H18: h1,...,h18"],
+    ["Putts H1-H18: p1,...,p18"],
+    ["Birdies (bir): X"],
+    ["Pares (par): X"],
+    ["Bogeys (bog): X"],
+    ["Dobles+ (dbl): X"],
+    ["GIR total: X"],
+    ["P<3m (p3): X"],
+    ["P>3m (pm3): X"],
+    ["Triputts (trip): X"],
+    ["Recuperaciones (rec): X"],
+    ["SP/Super rec (sp): X"],
+    ["Bunker (bun): X"],
+    ["Agua (agua): X"],
+    ["Penalidad (pen): X"],
+    ["Bola perdida (bola): X"],
+    [""],
+    ["FLUJO NUEVA CONVERSACION:"],
+    ["1. Sube el HTML existente"],
+    ["2. Claude pide la tarjeta"],
+    ["3. Pegas la tarjeta en formato 19 campos"],
+    ["4. Claude entrega HTML + Excel actualizados"],
+    [""],
+    ["COMANDO 'COMPLETA': rellenar todos los campos sin omitir"],
+    ["COMANDO 'EXCEL MAESTRO': solicitar Excel con 15 hojas (o pulsar boton verde en HTML)"]
+  ]),"14_Protocolo_Tarjeta");
+
+  // ===== 99_Validaciones =====
+  var totalSum=0,tBir=0,tPar=0,tBog=0,tDbl=0,tHi1=0,tGir=0;
+  var minT=Infinity,minN=0,maxT=-Infinity,maxN=0;
+  for(var i=0;i<RAW.length;i++){
+    var rr=RAW[i];
+    totalSum+=rr.totalNum; tBir+=rr.bir||0; tPar+=rr.par||0; tBog+=rr.bog||0; tDbl+=rr.dbl||0;
+    tHi1+=rr.hi1||0; tGir+=rr.gir||0;
+    if(rr.totalNum<minT){minT=rr.totalNum; minN=rr.n;}
+    if(rr.totalNum>maxT){maxT=rr.totalNum; maxN=rr.n;}
+  }
+  var l10=null,l20=null,l30=null;
+  if(RAW.length>=10){var s=0;for(var i=RAW.length-10;i<RAW.length;i++)s+=RAW[i].totalNum;l10=s/10;}
+  if(RAW.length>=20){var s=0;for(var i=RAW.length-20;i<RAW.length;i++)s+=RAW[i].totalNum;l20=s/20;}
+  if(RAW.length>=30){var s=0;for(var i=RAW.length-30;i<RAW.length;i++)s+=RAW[i].totalNum;l30=s/30;}
+  var camposU={}; for(var i=0;i<RAW.length;i++) camposU[RAW[i].campo]=1;
+  var nCampos=Object.keys(camposU).length;
+  var rocCount=0,canRafCount=0;
+  for(var i=0;i<RAW.length;i++){
+    if(RAW[i].campo==="ROC 3") rocCount++;
+    if(RAW[i].campo==="Can Rafael") canRafCount++;
+  }
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ["VALIDACIONES - VALORES GOLDEN"],
+    ["Si reconstruyes el HTML desde cero, deberias obtener estos mismos valores"],
+    [""],
+    ["Metrica","Valor"],
+    ["Total rondas",RAW.length],
+    ["Primera ronda n",firstR.n],
+    ["Primera fecha",firstR.fecha],
+    ["Primera campo",firstR.campo],
+    ["Primera totalNum",firstR.totalNum],
+    ["Ultima ronda n",lastR.n],
+    ["Ultima fecha",lastR.fecha],
+    ["Ultimo campo",lastR.campo],
+    ["Ultima totalNum",lastR.totalNum],
+    ["Suma totalNum (todas rondas)",totalSum],
+    ["Score promedio",Number((totalSum/RAW.length).toFixed(4))],
+    ["Total birdies",tBir],
+    ["Total pares",tPar],
+    ["Total bogeys",tBog],
+    ["Total dobles+",tDbl],
+    ["Total hoyos en uno",tHi1],
+    ["Total GIR (rondas con campo gir)",tGir],
+    ["Mejor ronda totalNum",minT],
+    ["Mejor ronda n",minN],
+    ["Peor ronda totalNum",maxT],
+    ["Peor ronda n",maxN],
+    ["Handicap last 10",l10!=null?Number(l10.toFixed(4)):""],
+    ["Handicap last 20",l20!=null?Number(l20.toFixed(4)):""],
+    ["Handicap last 30",l30!=null?Number(l30.toFixed(4)):""],
+    ["Numero campos unicos",nCampos],
+    ["Rondas en ROC 3",rocCount],
+    ["Rondas en Can Rafael",canRafCount]
+  ]),"99_Validaciones");
+
+  // Generar y descargar
+  var fname=YYYY+MM+DD+"_excel_maestro.xlsx";
+  XLSX.writeFile(wb,fname);
+}
+</script>
+<script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",function(){
+    navigator.serviceWorker.register("service-worker.js").then(function(reg){
+      console.log("SW registrado:",reg.scope);
+    }).catch(function(err){
+      console.log("SW error:",err);
+    });
+  });
+}
+</script>
+</body>
+</html>
