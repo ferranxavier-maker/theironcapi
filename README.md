@@ -33,7 +33,7 @@ Todos los registros en **DNS only** (nube gris, sin proxy). Si se activa el prox
 ```
 theironcapi/
 ├── index.html           ← Landing (portada de theironcapi.com, banner "The Iron Capi" incrustado en el propio HTML)
-├── bdd.html             ← App de resultados y estadísticas (todo el código va dentro)
+├── bdd.html             ← App de resultados: Pitch & Putt y Golf (todos los datos y el código van dentro)
 ├── manifest.json        ← Ficha de la app instalable: nombre, icono, colores
 ├── service-worker.js    ← Copia offline de los archivos y control de versiones
 ├── icon-192.png         ← Icono de la app (Android)
@@ -43,7 +43,7 @@ theironcapi/
 └── README.md            ← Este archivo
 ```
 
-Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. La landing enlaza con el botón **Resultados** a `bdd.html`. El Excel se genera con SheetJS 0.18.5 desde CDN.
+Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. En la landing, el botón **Resultados** despliega dos opciones: **Pitch & Putt** (`bdd.html?m=pp`) y **Golf** (`bdd.html?m=golf`). El enlace "← Inicio" de la app vuelve a la landing. El Excel se genera con xlsx-js-style 1.2.0 desde CDN.
 
 ---
 
@@ -54,7 +54,7 @@ Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTM
 3. GitHub Pages publica en 1-2 minutos.
 4. En el móvil: abrir la app con conexión; si no se actualiza, cerrarla del todo y volver a abrir.
 
-**Antes de actualizar, exportar siempre el backup JSON.**
+Las rondas van dentro de `bdd.html`, así que la copia buena es siempre la última versión del archivo en el repo.
 
 ---
 
@@ -70,17 +70,12 @@ Al cambiar el icono o el nombre, hay que quitar la app del móvil y volver a ins
 
 ## Datos, backup y cambio de dominio
 
-Los datos se guardan en el navegador de cada dispositivo (`localStorage`), ligados al dominio. Claves: `pp9`, `pp_rounds`, `pp_extra_rounds`, `pp_extra_rounds_full`, `pp_course`, `pp_customs`.
+Todas las rondas (Pitch & Putt y Golf) van escritas dentro de `bdd.html`. Lo que se añade desde el móvil se guarda además en el navegador (`localStorage`, ligado al dominio) con las claves `pp9`, `pp_extra_rounds`, `pp_course`, `pp_customs`.
 
-En la pestaña **Comandos**:
-
-- **Exportar JSON** → descarga `ironcapi_YYYYMMDD.json` con todas las rondas (RAW + HOLES + PUTTS + BAN + OBS + PEN).
-- **Importar JSON** → restaura todo desde un backup. Pide confirmación antes de sobrescribir.
-- **Exportar Excel Maestro** → Excel con todos los datos y reglas necesarios para reconstruir la web.
+En la pestaña **Comandos** está **Exportar Excel Maestro**: Excel con todos los datos y reglas necesarios para reconstruir la web.
 
 Cosas a tener en cuenta:
 
-- Borrar los datos del navegador borra las rondas. El JSON es el seguro.
-- **Cambio de dominio:** los datos de la versión antigua (`github.io/bddpp`) no pasan solos a `theironcapi.com`. Exportar JSON desde la versión vieja, importarlo en la nueva y reinstalar la app desde el dominio nuevo.
-- **Pasar a otro dispositivo:** exportar JSON en uno e importarlo en el otro.
-- Mientras todo siga en `theironcapi.com` (incluida `theironcapi.com/bdd.html`), los datos se conservan.
+- Borrar los datos del navegador borra solo lo añadido desde el móvil que aún no esté en `bdd.html`.
+- **Cambio de dominio:** lo guardado en el navegador con la versión antigua (`github.io/bddpp`) no pasa solo a `theironcapi.com`; hay que reinstalar la app desde el dominio nuevo.
+- Mientras todo siga en `theironcapi.com`, lo guardado en el navegador se conserva.
