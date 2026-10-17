@@ -45,7 +45,10 @@ a{color:inherit;text-decoration:none}
 .cta:active{transform:scale(.97)}
 .cta svg{width:18px;height:18px}
 
-.foot{border-top:1px solid var(--line);padding:16px 20px;font-size:12px;color:var(--muted);text-align:center}
+.foot{border-top:1px solid var(--line);padding:20px 20px 18px;font-size:12px;color:var(--muted);text-align:center}
+.social{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 28px;margin-bottom:12px}
+.social a{font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);transition:color .2s}
+.social a:hover{color:var(--rust)}
 </style>
 </head>
 <body>
@@ -66,7 +69,13 @@ a{color:inherit;text-decoration:none}
   </div>
 </main>
 
-<footer class="foot">&copy; <span id="y">2026</span> The Iron Capi</footer>
+<footer class="foot">
+  <nav class="social">
+    <a href="#" target="_blank" rel="noopener">YouTube</a>
+    <a href="#" target="_blank" rel="noopener">Instagram</a>
+    <a href="#" target="_blank" rel="noopener">TikTok</a>
+  </nav>
+  &copy; <span id="y">2026</span> The Iron Capi</footer>
 
 <script>
 document.getElementById("y").textContent = new Date().getFullYear();
