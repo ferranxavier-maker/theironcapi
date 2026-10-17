@@ -60,9 +60,16 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
 .opt small{font-size:10px;font-weight:600;letter-spacing:.12em;margin-top:2px}
 
 .foot{border-top:1px solid var(--line);padding:20px 20px 18px;font-size:12px;color:var(--muted);text-align:center}
-.social{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 28px;margin-bottom:12px}
-.social a{font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);transition:color .2s}
-.social a:hover{color:var(--rust)}
+.social{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px}
+.soc{position:relative;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#8a7a68 0%,#5a4a3c 45%,#2a221c 100%);
+  border:2px solid #1a1410;box-shadow:inset 0 2px 3px rgba(255,240,220,.25),inset 0 -3px 4px rgba(0,0,0,.45),0 3px 6px rgba(0,0,0,.25);
+  transition:transform .2s,background .2s}
+.soc::before,.soc::after{content:"";position:absolute;width:4px;height:4px;border-radius:50%;background:#c9b9a3;box-shadow:inset 0 -1px 1px rgba(0,0,0,.5)}
+.soc::before{top:5px;left:50%;margin-left:-2px}
+.soc::after{bottom:5px;left:50%;margin-left:-2px}
+.soc i{display:block;width:22px;height:22px;background:#e8dcc8;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
+.soc:hover{transform:translateY(-2px) rotate(-4deg);background:radial-gradient(circle at 35% 30%,#c08552 0%,#8a5530 50%,#4a2c18 100%)}
 </style>
 </head>
 <body>
@@ -85,16 +92,16 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
       </svg>
       <span class="res-txt">Resultados</span>
     </a>
+    <nav class="social" aria-label="Redes">
+      <a class="soc" href="https://www.youtube.com/@theironcapi" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/youtube.svg)"></i></a>
+      <a class="soc" href="#" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/instagram.svg)"></i></a>
+      <a class="soc" href="#" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/tiktok.svg)"></i></a>
+      <a class="soc" href="onlyfans.html" title="OnlyFans" aria-label="OnlyFans"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/onlyfans.svg)"></i></a>
+    </nav>
   </div>
 </main>
 
 <footer class="foot">
-  <nav class="social">
-    <a href="https://www.youtube.com/@theironcapi" target="_blank" rel="noopener">YouTube</a>
-    <a href="#" target="_blank" rel="noopener">Instagram</a>
-    <a href="#" target="_blank" rel="noopener">TikTok</a>
-    <a href="onlyfans.html">OnlyFans</a>
-  </nav>
   &copy; <span id="y">2026</span> The Iron Capi</footer>
 
 <script>
