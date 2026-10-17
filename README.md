@@ -44,7 +44,7 @@ theironcapi/
 └── README.md            ← Este archivo
 ```
 
-Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. La landing tiene un enlace **Resultados** que lleva a `bdd.html`, donde se elige Pitch & Putt o Golf (también se puede entrar directo con `bdd.html?m=pp` o `bdd.html?m=golf`). El enlace "← Inicio" de la app vuelve a la landing. Bajo Resultados van los iconos de YouTube, Instagram, TikTok y OnlyFans (iconos de Simple Icons cargados desde jsdelivr, en medallones de hierro). Debajo va el globo de visitantes de MapMyVisitors (cuenta en mapmyvisitors.com; el service worker no lo cachea para que los datos estén siempre al día). El Excel se genera con xlsx-js-style 1.2.0 desde CDN.
+Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. La landing tiene un enlace **Resultados** que lleva a `bdd.html`, donde se elige Pitch & Putt o Golf (también se puede entrar directo con `bdd.html?m=pp` o `bdd.html?m=golf`). El enlace "← Inicio" de la app vuelve a la landing. Bajo Resultados van los iconos de YouTube, Instagram, TikTok y OnlyFans (iconos de bronce/hierro con su nombre debajo, hechos por Ferran e incrustados en el HTML). Debajo va el globo de visitantes de MapMyVisitors (cuenta en mapmyvisitors.com; el service worker no lo cachea para que los datos estén siempre al día). El Excel se genera con xlsx-js-style 1.2.0 desde CDN.
 
 ---
 
