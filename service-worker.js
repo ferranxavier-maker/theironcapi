@@ -1,7 +1,7 @@
 // The Iron Capi - Service Worker
 // Estrategia: cache-first para assets estaticos. Network-first para HTML.
 
-const CACHE_NAME = "ironcapi-v29";
+const CACHE_NAME = "ironcapi-v30";
 
 const ASSETS = [
   "./",
@@ -40,6 +40,9 @@ self.addEventListener("activate", function(event){
 // Fetch: cache-first con fallback a network. Si network falla, devolver cache.
 self.addEventListener("fetch", function(event){
   if(event.request.method !== "GET") return;
+  // Solo cacheamos lo propio y las librerias de jsdelivr; el resto (globo de visitas, YouTube...) va siempre a la red
+  var u = new URL(event.request.url);
+  if(u.origin !== self.location.origin && u.hostname !== "cdn.jsdelivr.net") return;
 
   event.respondWith(
     caches.match(event.request, {ignoreSearch: true}).then(function(cached){
