@@ -48,11 +48,11 @@ a{color:inherit;text-decoration:none}
 button.cta{border:0;cursor:pointer;font-family:inherit}
 .opts{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
 .opts .cta{width:200px;justify-content:center}
-.res{display:inline-flex;align-items:center;gap:18px;line-height:1}
+.res{display:inline-flex;align-items:flex-end;gap:16px;line-height:1}
 .res-txt{font-family:Anton,Impact,"Arial Narrow",sans-serif;font-size:clamp(40px,7vw,72px);text-transform:uppercase;letter-spacing:.02em;
   background:linear-gradient(180deg,#8a7a68 0%,#5a4a3c 45%,#2a221c 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(2px 3px 2px rgba(0,0,0,.25))}
-.res-arr{width:clamp(56px,8vw,88px);height:auto;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.25));transition:transform .25s}
+.res-arr{width:clamp(48px,7vw,78px);height:auto;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.25));transition:transform .25s}
 .res:hover .res-arr{transform:translateX(8px)}
 .res:hover .res-txt{background:linear-gradient(180deg,#c08552 0%,#8a5530 50%,#4a2c18 100%);-webkit-background-clip:text;background-clip:text}
 .opts[hidden]{display:none}
@@ -79,8 +79,7 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
   </div>
   <div class="copy">
     <a class="res" href="bdd.html">
-      <span class="res-txt">Resultados</span>
-      <svg class="res-arr" viewBox="0 0 64 40" aria-hidden="true">
+      <svg class="res-arr" viewBox="0 0 64 56" aria-hidden="true">
         <defs>
           <linearGradient id="iron" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#8a7a68"/>
@@ -88,11 +87,13 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
             <stop offset="1" stop-color="#2a221c"/>
           </linearGradient>
         </defs>
-        <path d="M2 10h32V1l28 19-28 19v-9H2z" fill="url(#iron)" stroke="#1a1410" stroke-width="2" stroke-linejoin="round"/>
-        <circle cx="9" cy="20" r="2.6" fill="#c9b9a3"/>
-        <circle cx="21" cy="20" r="2.6" fill="#c9b9a3"/>
-        <circle cx="42" cy="20" r="2.6" fill="#c9b9a3"/>
+        <path d="M3 2h13v28h22v-12l24 19-24 19v-12H3z" fill="url(#iron)" stroke="#1a1410" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="9.5" cy="9" r="2.4" fill="#c9b9a3"/>
+        <circle cx="9.5" cy="21" r="2.4" fill="#c9b9a3"/>
+        <circle cx="12" cy="37" r="2.4" fill="#c9b9a3"/>
+        <circle cx="26" cy="37" r="2.4" fill="#c9b9a3"/>
       </svg>
+      <span class="res-txt">Resultados</span>
     </a>
   </div>
 </main>
