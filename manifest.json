@@ -1,7 +1,7 @@
 {
-  "name": "BDD Golf - Ferran Lobon",
-  "short_name": "BDD Golf",
-  "description": "Base de datos personal de Pitch & Putt - rondas, stats, handicaps y records",
+  "name": "The Iron Capi",
+  "short_name": "Iron Capi",
+  "description": "Web personal de Pitch & Putt de Ferran Lobon - rondas, stats, handicaps y records",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

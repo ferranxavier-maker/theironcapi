@@ -1,121 +1,85 @@
-# BDD Golf - PWA
+# The Iron Capi
 
-App web instalable (PWA) para mi BDD personal de Pitch & Putt: visor de rondas, stats, handicaps rolling, records, formulario de tarjeta, exportar Excel y backup JSON.
+Web personal de Ferran Lobón (Pitch & Putt, modalidad Catalunya): resultados, estadísticas, handicaps, récords, formulario de tarjeta, Excel Maestro y backup JSON.
 
-Funciona offline una vez instalada y guarda los datos localmente en el móvil.
-
----
-
-## 1. Crear el repositorio en GitHub
-
-1. Entra en https://github.com con tu cuenta.
-2. Pulsa el botón verde **"Create repository"** (arriba a la izquierda) o el `+` de la barra superior → *New repository*.
-3. Rellena:
-   - **Repository name**: `bdd-golf` (sin espacios ni acentos; los `-` están permitidos)
-   - **Description**: `BDD personal Pitch & Putt`
-   - **Public** ✅ (obligatorio para usar GitHub Pages gratis)
-   - **Add a README file** ✅
-4. Pulsa **"Create repository"** abajo del todo.
+Publicada en **https://theironcapi.com**. Es instalable en el móvil (PWA), funciona sin conexión y guarda los datos en el propio dispositivo.
 
 ---
 
-## 2. Subir los archivos
+## Publicación
 
-Dentro del repo recién creado:
+- **Repositorio:** `ferranxavier-maker/theironcapi` (antes `bddpp`; la URL antigua `ferranxavier-maker.github.io/bddpp` redirige al dominio nuevo).
+- **GitHub Pages:** rama `main`, carpeta raíz `/ (root)`, dominio propio `theironcapi.com`, HTTPS activado.
+- **CNAME:** el archivo `CNAME` del repo contiene `theironcapi.com`. **No borrarlo**: sin él, GitHub Pages pierde el dominio.
 
-1. Pulsa **"Add file"** → **"Upload files"**.
-2. Arrastra estos 5 archivos a la zona de subida:
-   - `index.html`
-   - `manifest.json`
-   - `service-worker.js`
-   - `icon-192.png`
-   - `icon-512.png`
-3. Abajo, en *Commit changes*, pulsa el botón verde **"Commit changes"**.
+## Dominio y DNS (Cloudflare)
 
-> Si ves que ya existía un README.md del paso 1, no pasa nada: puedes sustituirlo por el de este proyecto o dejar el suyo. Lo importante son los 5 archivos de arriba.
+Dominio comprado en Cloudflare, en la cuenta de `theironsgolfclub@gmail.com`.
 
----
+Todos los registros en **DNS only** (nube gris, sin proxy). Si se activa el proxy, GitHub Pages puede dejar de renovar el certificado HTTPS.
 
-## 3. Activar GitHub Pages
-
-Dentro del repo:
-
-1. Pestaña **Settings** (arriba a la derecha del repo).
-2. Menú izquierdo → **Pages**.
-3. En *Source*:
-   - **Branch**: `main`
-   - **Folder**: `/ (root)`
-4. Pulsa **"Save"**.
-
-Espera 1-2 minutos. Refresca la página de Pages y verás arriba la URL pública del tipo:
-
-```
-https://TU-USUARIO.github.io/bdd-golf/
-```
-
-Esa es la dirección desde la que vas a instalar la app en el móvil.
-
----
-
-## 4. Instalar en Android
-
-1. Abre **Chrome** en el móvil.
-2. Ve a la URL pública del paso 3.
-3. Espera unos segundos a que cargue completa (la primera vez descarga SheetJS y lo guarda para offline).
-4. Menú de Chrome (3 puntos arriba a la derecha) → **"Instalar app"** o **"Añadir a pantalla de inicio"**.
-5. Confirma. El icono verde con la bandera aparece en el lanzador.
-6. Abre desde el icono: arranca a pantalla completa, sin barra de Chrome.
-
-A partir de aquí funciona sin conexión. Los datos se guardan en el móvil y persisten al cerrar y reabrir.
-
----
-
-## 5. Backup y restauración (Exportar / Importar JSON)
-
-Dentro de la app, pestaña **Comandos**:
-
-- **Exportar JSON (backup)** → descarga `bdd_golf_YYYYMMDD.json` con todas las rondas (RAW + HOLES + PUTTS + BAN + OBS + PEN). Guarda este archivo en Drive, mail, o donde prefieras.
-- **Importar JSON (restaurar)** → selector de archivo. Carga un JSON previamente exportado y restaura toda la BDD. Pide confirmación antes de sobrescribir.
-
-**Recomendación**: exporta JSON cada cierto tiempo, sobre todo después de añadir tarjetas nuevas. Es tu seguro contra borrar el caché del navegador, cambiar de móvil o reinstalar.
-
-**Mover entre dispositivos**: Exportar JSON en el móvil → enviarlo al ordenador (mail, Drive, etc.) → en la versión web del ordenador, Importar JSON. Los datos quedan idénticos en ambos sitios.
-
----
-
-## 6. Actualizar la app (cuando Claude entregue una versión nueva del HTML)
-
-1. En el repo de GitHub, pulsa el archivo `index.html`.
-2. Pulsa el icono del lápiz (✏️) arriba a la derecha → *Edit this file*.
-3. Borra todo el contenido y pega el nuevo HTML.
-4. Pulsa **"Commit changes"**.
-
-Alternativa más simple: borra el `index.html` antiguo (botón papelera) y vuelve a subir el nuevo con *Add file → Upload files*.
-
-> En el móvil, la próxima vez que abras la app con conexión, el service worker detectará la nueva versión. Si no se actualiza al instante, cierra la app, espera unos segundos y vuelve a abrir.
-
-**Antes de actualizar siempre Exporta JSON primero**, por si acaso.
+| Tipo  | Nombre           | Valor                         |
+|-------|------------------|-------------------------------|
+| A     | theironcapi.com  | 185.199.108.153               |
+| A     | theironcapi.com  | 185.199.109.153               |
+| A     | theironcapi.com  | 185.199.110.153               |
+| A     | theironcapi.com  | 185.199.111.153               |
+| CNAME | www              | ferranxavier-maker.github.io  |
 
 ---
 
 ## Estructura del repo
 
 ```
-bdd-golf/
-├── index.html         ← App principal (PWA)
-├── manifest.json      ← Metadata PWA (nombre, iconos, colores)
-├── service-worker.js  ← Cache offline
-├── icon-192.png       ← Icono pantalla de inicio
-├── icon-512.png       ← Icono splash y stores
-└── README.md          ← Este archivo
+theironcapi/
+├── index.html           ← La web/app (todo el código va dentro)
+├── manifest.json        ← Ficha de la app instalable: nombre, icono, colores
+├── service-worker.js    ← Copia offline de los archivos y control de versiones
+├── icon-192.png         ← Icono de la app (Android)
+├── icon-512.png         ← Icono grande (pantalla de carga)
+├── apple-touch-icon.png ← Icono para iPhone (180 px)
+├── CNAME                ← Dominio propio. No borrar
+└── README.md            ← Este archivo
 ```
 
-Todo es estático, sin build step, sin dependencias de servidor. JavaScript vanilla embebido en el HTML.
+Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. El Excel se genera con SheetJS 0.18.5 desde CDN.
 
 ---
 
-## Notas técnicas
+## Actualizar la web
 
-- Datos persistidos en `localStorage` con claves: `pp9`, `pp_extra_rounds`, `pp_extra_rounds_full`, `pp_course`, `pp_customs`, `pp_rounds`.
-- Limpieza de caché del navegador (Chrome → Configuración → Privacidad → Borrar datos) borra todos los datos. Por eso el JSON de backup es imprescindible.
-- La app pide conexión solo la primera vez, para descargar SheetJS desde CDN. A partir de ahí queda en cache y funciona 100% offline.
+1. Subir los archivos nuevos al repo `theironcapi`, rama `main` (*Add file → Upload files*, sustituyendo los existentes).
+2. **Subir la versión del caché** en `service-worker.js` (`CACHE_NAME = "ironcapi-v2"` → `v3`, `v4`…). Si no se cambia, el móvil puede seguir mostrando la versión antigua.
+3. GitHub Pages publica en 1-2 minutos.
+4. En el móvil: abrir la app con conexión; si no se actualiza, cerrarla del todo y volver a abrir.
+
+**Antes de actualizar, exportar siempre el backup JSON.**
+
+---
+
+## Instalar en el móvil
+
+**Android (Chrome):** abrir https://theironcapi.com → menú ⋮ → *Instalar app* / *Añadir a pantalla de inicio*.
+
+**iPhone (Safari):** abrir https://theironcapi.com → botón Compartir → *Añadir a pantalla de inicio*.
+
+Al cambiar el icono o el nombre, hay que quitar la app del móvil y volver a instalarla para verlo.
+
+---
+
+## Datos, backup y cambio de dominio
+
+Los datos se guardan en el navegador de cada dispositivo (`localStorage`), ligados al dominio. Claves: `pp9`, `pp_rounds`, `pp_extra_rounds`, `pp_extra_rounds_full`, `pp_course`, `pp_customs`.
+
+En la pestaña **Comandos**:
+
+- **Exportar JSON** → descarga `ironcapi_YYYYMMDD.json` con todas las rondas (RAW + HOLES + PUTTS + BAN + OBS + PEN).
+- **Importar JSON** → restaura todo desde un backup. Pide confirmación antes de sobrescribir.
+- **Exportar Excel Maestro** → Excel con todos los datos y reglas necesarios para reconstruir la web.
+
+Cosas a tener en cuenta:
+
+- Borrar los datos del navegador borra las rondas. El JSON es el seguro.
+- **Cambio de dominio:** los datos de la versión antigua (`github.io/bddpp`) no pasan solos a `theironcapi.com`. Exportar JSON desde la versión vieja, importarlo en la nueva y reinstalar la app desde el dominio nuevo.
+- **Pasar a otro dispositivo:** exportar JSON en uno e importarlo en el otro.
+- Mientras todo siga en `theironcapi.com` (incluidas subcarpetas como `/resultados/`), los datos se conservan.

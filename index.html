@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#1a7f4b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="BDD Golf">
+<meta name="apple-mobile-web-app-title" content="Iron Capi">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="application-name" content="BDD Golf">
+<meta name="application-name" content="Iron Capi">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<title>BDD Golf - Ferran Lobon</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>The Iron Capi</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html,body{background:#fff;min-height:100%}body{font-family:system-ui,sans-serif;font-size:13px;color:#333}.tab{padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;color:#888;white-space:nowrap}.tab.active{color:var(--tc);border-bottom-color:var(--tc)}.controls{display:flex;gap:6px;padding:8px 14px;border-bottom:1px solid #ddd;flex-wrap:wrap;align-items:center;background:#fff;position:sticky;top:75px;z-index:8}input,select{font-size:11px;padding:3px 7px;border:1px solid #ccc;border-radius:4px;height:26px;background:#fff}.wrap{overflow:auto;max-height:calc(100vh - 130px)}table{border-collapse:collapse;font-size:10px;table-layout:fixed}th{padding:4px 3px;font-weight:600;font-size:10px;color:#555;background:#d8e4f0;border-bottom:2px solid #b0c8e0;border-right:1px solid #c0d0e0;white-space:nowrap;text-align:center;position:sticky;top:0;z-index:2}td{border-bottom:1px solid #eee;padding:2px 2px;text-align:center;white-space:nowrap;overflow:hidden}.card{background:#f8f8f8;border-radius:10px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:16px;max-width:420px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}.stat-box{border-radius:10px;padding:10px 12px}.rec-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;border-radius:8px;margin-bottom:6px;border:1px solid #e8e8e8}.rec-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-weight:700}.win-header{border-radius:12px;padding:16px 24px;margin-bottom:14px;text-align:center;position:relative;min-height:100px}.win-side{position:absolute;top:50%;transform:translateY(-50%);text-align:center}.section{padding:14px 18px;max-width:980px}.section-title{font-size:10px;font-weight:700;color:#999;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}.mini-table{width:100%;border-collapse:collapse;font-size:10px;border:1px solid #eee}.mini-table th{background:#f0f4f8;padding:4px 5px;font-size:9px;font-weight:600;color:#666;border-bottom:1px solid #eee;text-align:center}.mini-table td{padding:3px 5px;text-align:center;border-bottom:1px solid #f5f5f5}.mini-table tr:nth-child(even) td{background:#fafafa}
@@ -20,7 +20,7 @@
 </head>
 <body>
 <div style="border-bottom:1px solid #ddd;position:sticky;top:0;z-index:10;background:#fff;padding:8px 14px 0">
-  <h1 id="hdr" style="font-size:14px;font-weight:700;margin-bottom:6px">&#9971; BDD Golf</h1>
+  <h1 id="hdr" style="font-size:14px;font-weight:700;margin-bottom:6px">&#9971; Iron Capi</h1>
   <div style="display:flex;overflow-x:auto;border-top:1px solid #f0f0f0">
     <div class="tab" data-tab="nueva" style="--tc:#00a896;font-size:18px;font-weight:700">&#10133;</div>
     <div class="tab active" data-tab="tabla" style="--tc:#1a7f4b">&#128203; Tabla</div>
@@ -858,7 +858,7 @@
     // Actualizar contador del header
     try {
       var hdr = document.getElementById("hdr");
-      if (hdr) hdr.textContent = "Golf BDD \u2014 " + RAW.length + " rondas \u00b7 Ferran Lob\u00f3n";
+      if (hdr) hdr.textContent = "Iron Capi \u2014 " + RAW.length + " rondas \u00b7 Ferran Lob\u00f3n";
     } catch(e){}
     // Re-renderizar la pestaña Tabla (no tiene cache lazy)
     try { if (typeof renderTable === "function") renderTable(); } catch(e){}
@@ -939,7 +939,7 @@ try{
 }catch(__e){}
 try{var __extra=JSON.parse(localStorage.getItem("pp_extra_rounds")||"[]");if(Array.isArray(__extra)){for(var __i=0;__i<__extra.length;__i++){var __r=__extra[__i];if(__r&&__r.raw&&__r.holes){var __k=String(__r.raw.n);RAW.push(__r.raw);HOLES_DATA[__k]=__r.holes;if(__r.putts)PUTTS_DATA[__k]=__r.putts;if(__r.ban)BAN_DATA[__k]=__r.ban;if(__r.obs)OBS_DATA[__k]=__r.obs;if(__r.pen)PEN_DATA[__k]=__r.pen;}}}}catch(__e){}
 normalizeRAW();
-document.getElementById("hdr").textContent="Golf BDD \u2014 "+RAW.length+" rondas \u00b7 Ferran Lob\u00f3n";
+document.getElementById("hdr").textContent="Iron Capi \u2014 "+RAW.length+" rondas \u00b7 Ferran Lob\u00f3n";
 var campos=[...new Set(RAW.map(function(r){return r.campo;}))].sort();
 var selC=document.getElementById("campo-filter");
 campos.forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;selC.appendChild(o);});
@@ -1019,9 +1019,9 @@ function renderRecords(){
 function renderComandos(){
   var lastR=RAW[RAW.length-1];
   var PRO="Fecha: DD/MM/AAAA\nCampo: NOMBRE_CAMPO\nTotal: +X\nHoyos H1-H18: h1,...,h18\nPutts H1-H18: p1,...,p18\nBirdies (bir): X\nPares (par): X\nBogeys (bog): X\nDobles+ (dbl): X\nGIR total: X\nP<3m (p3): X\nP>3m (pm3): X\nTriputts (trip): X\nRecuperaciones (rec): X\nSP/Super rec (sp): X\nBunker (bun): X\nAgua (agua): X\nPenalidad (pen): X\nBola perdida (bola): X";
-  var h='<div style="background:linear-gradient(135deg,#dc2626,#991b1b);border-radius:10px;padding:16px 20px;margin-bottom:16px;color:#fff"><div style="font-size:18px;font-weight:800;margin-bottom:4px">Comandos y Protocolo</div><div style="font-size:11px;opacity:0.85">BDD Golf &middot; '+RAW.length+' rondas &middot; R'+lastR.n+' '+lastR.fecha+' '+lastR.campo+'</div></div>';
+  var h='<div style="background:linear-gradient(135deg,#dc2626,#991b1b);border-radius:10px;padding:16px 20px;margin-bottom:16px;color:#fff"><div style="font-size:18px;font-weight:800;margin-bottom:4px">Comandos y Protocolo</div><div style="font-size:11px;opacity:0.85">Iron Capi &middot; '+RAW.length+' rondas &middot; R'+lastR.n+' '+lastR.fecha+' '+lastR.campo+'</div></div>';
   h+='<button id="excel-maestro-btn" type="button" style="width:100%;border:2px solid #16a34a;border-radius:10px;margin-bottom:14px;overflow:hidden;background:#fff;cursor:pointer;padding:0;display:block;text-align:left;font-family:inherit"><div style="background:#f0fdf4;padding:10px 14px;border-bottom:1px solid #86efac"><span style="font-weight:700;font-size:13px;color:#16a34a">EXPORTAR EXCEL MAESTRO</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2;color:#333">Pulsa para descargar el Excel maestro con las 16 hojas (datos + specs + validaciones)</div></button>';
-  h+='<button id="export-json-btn" type="button" style="width:100%;border:2px solid #2563eb;border-radius:10px;margin-bottom:14px;overflow:hidden;background:#fff;cursor:pointer;padding:0;display:block;text-align:left;font-family:inherit"><div style="background:#eff6ff;padding:10px 14px;border-bottom:1px solid #93c5fd"><span style="font-weight:700;font-size:13px;color:#2563eb">EXPORTAR JSON (BACKUP)</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2;color:#333">Descarga bdd_golf_YYYYMMDD.json con RAW + HOLES + PUTTS + BAN + OBS + PEN (datos base + tarjetas nuevas fusionados)</div></button>';
+  h+='<button id="export-json-btn" type="button" style="width:100%;border:2px solid #2563eb;border-radius:10px;margin-bottom:14px;overflow:hidden;background:#fff;cursor:pointer;padding:0;display:block;text-align:left;font-family:inherit"><div style="background:#eff6ff;padding:10px 14px;border-bottom:1px solid #93c5fd"><span style="font-weight:700;font-size:13px;color:#2563eb">EXPORTAR JSON (BACKUP)</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2;color:#333">Descarga ironcapi_YYYYMMDD.json con RAW + HOLES + PUTTS + BAN + OBS + PEN (datos base + tarjetas nuevas fusionados)</div></button>';
   h+='<button id="import-json-btn" type="button" style="width:100%;border:2px solid #ea580c;border-radius:10px;margin-bottom:14px;overflow:hidden;background:#fff;cursor:pointer;padding:0;display:block;text-align:left;font-family:inherit"><div style="background:#fff7ed;padding:10px 14px;border-bottom:1px solid #fdba74"><span style="font-weight:700;font-size:13px;color:#ea580c">IMPORTAR JSON (RESTAURAR)</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2;color:#333">Carga un JSON previamente exportado y restaura toda la BDD en localStorage. Util para mover entre dispositivos.</div></button>';
   h+='<input type="file" id="import-json-file" accept=".json,application/json" style="display:none">';
   h+='<div style="border:2px solid #dc2626;border-radius:10px;margin-bottom:14px;overflow:hidden"><div style="background:#fff0f0;padding:10px 14px;border-bottom:1px solid #fca5a5"><span style="font-weight:700;font-size:13px;color:#dc2626">FLUJO NUEVA CONVERSACION</span></div><div style="padding:12px 14px;background:#fff;font-size:12px;line-height:2">Paso 1 &mdash; Sube el JSX o HTML<br>Paso 2 &mdash; Claude pide la tarjeta<br>Paso 3 &mdash; Pegas la tarjeta<br>Paso 4 &mdash; Claude entrega JSX + HTML + Excel</div></div>';
@@ -1081,7 +1081,7 @@ function exportarJSON(){
     var jsonStr=JSON.stringify(payload,null,2);
     var d=new Date();
     var YYYY=d.getFullYear(),MM=String(d.getMonth()+1).padStart(2,"0"),DD=String(d.getDate()).padStart(2,"0");
-    var fname="bdd_golf_"+YYYY+MM+DD+".json";
+    var fname="ironcapi_"+YYYY+MM+DD+".json";
     var blob=new Blob([jsonStr],{type:"application/json"});
     var url=URL.createObjectURL(blob);
     var a=document.createElement("a");
@@ -1148,7 +1148,7 @@ function generarExcel(){
 
   // ===== 00_LEEME =====
   var s00=XLSX.utils.aoa_to_sheet([
-    ["BDD GOLF - EXCEL MAESTRO"],
+    ["THE IRON CAPI - EXCEL MAESTRO"],
     [""],
     ["Ferran Lobon - Pitch & Putt modalidad Catalunya (par 54)"],
     ["Generado: "+fechaGen],

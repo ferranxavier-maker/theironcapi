@@ -1,7 +1,7 @@
-// BDD Golf - Service Worker
+// The Iron Capi - Service Worker
 // Estrategia: cache-first para assets estaticos. Network-first para HTML.
 
-const CACHE_NAME = "bdd-golf-v1";
+const CACHE_NAME = "ironcapi-v2";
 
 const ASSETS = [
   "./",
@@ -9,6 +9,7 @@ const ASSETS = [
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",
+  "./apple-touch-icon.png",
   "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
 ];
 
