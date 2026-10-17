@@ -73,8 +73,6 @@ Al cambiar el icono o el nombre, hay que quitar la app del móvil y volver a ins
 
 Todas las rondas (Pitch & Putt y Golf) van escritas dentro de `bdd.html`. Lo que se añade desde el móvil se guarda además en el navegador (`localStorage`, ligado al dominio) con las claves `pp9`, `pp_extra_rounds`, `pp_course`, `pp_customs`.
 
-En la pestaña **Comandos** está **Exportar Excel Maestro**: Excel con todos los datos y reglas necesarios para reconstruir la web.
-
 Cosas a tener en cuenta:
 
 - Borrar los datos del navegador borra solo lo añadido desde el móvil que aún no esté en `bdd.html`.
