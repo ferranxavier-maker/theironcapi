@@ -44,7 +44,7 @@ theironcapi/
 └── README.md            ← Este archivo
 ```
 
-Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. En la landing, el botón **Resultados** despliega dos opciones: **Pitch & Putt** (`bdd.html?m=pp`) y **Golf** (`bdd.html?m=golf`). El enlace "← Inicio" de la app vuelve a la landing. El Excel se genera con xlsx-js-style 1.2.0 desde CDN.
+Todo es estático: sin servidor, sin compilación. JavaScript embebido en el HTML. La landing muestra directamente dos botones: **Pitch & Putt** (`bdd.html?m=pp`) y **Golf** (`bdd.html?m=golf`). El enlace "← Inicio" de la app vuelve a la landing. El Excel se genera con xlsx-js-style 1.2.0 desde CDN.
 
 ---
 
