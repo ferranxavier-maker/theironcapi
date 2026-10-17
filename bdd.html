@@ -20,6 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+<div id="home-top" style="padding:8px 14px 0"><a href="index.html" style="display:inline-block;font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#1a1814;text-decoration:none;padding:8px 2px">The Iron Capi</a></div>
 <div id="home" style="padding:64px 20px;max-width:560px;margin:0 auto">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
     <div onclick="abrirApp('pp')" style="cursor:pointer;background:#f0fdf4;border:1px solid #d6f0e0;border-radius:14px;padding:26px 18px;text-align:center">
@@ -35,7 +36,7 @@
   </div>
 </div>
 <div id="app-pp" style="display:none">
-<div style="padding:6px 14px 0"><span onclick="volverHome()" style="cursor:pointer;font-size:11px;color:#1565c0">&larr; Inicio</span></div>
+<div style="padding:8px 14px 0"><a href="index.html" style="display:inline-block;font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#1a1814;text-decoration:none;padding:8px 2px">The Iron Capi</a></div>
 <div style="border-bottom:1px solid #ddd;position:sticky;top:0;z-index:10;background:#fff;padding:8px 14px 0">
   <h1 id="hdr" style="font-size:14px;font-weight:700;margin-bottom:6px">&#9971; Iron Capi</h1>
   <div style="display:flex;overflow-x:auto;border-top:1px solid #f0f0f0">
@@ -1023,7 +1024,7 @@
 </div>
 <div id="app-golf" style="display:none">
 <div style="border-bottom:1px solid #ddd;position:sticky;top:0;z-index:10;background:#fff;padding:8px 14px 0">
-  <div><span onclick="volverHome()" style="cursor:pointer;font-size:11px;color:#1565c0">&larr; Inicio</span></div>
+  <div><a href="index.html" style="display:inline-block;font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#1a1814;text-decoration:none;padding:8px 2px">The Iron Capi</a></div>
   <h1 id="hdr-golf" style="font-size:14px;font-weight:700;margin:4px 0 6px">&#127948;&#65039; Golf</h1>
   <div style="display:flex;overflow-x:auto;border-top:1px solid #f0f0f0">
     <div class="gtab" data-gtab="nueva" style="--tc:#00a896;font-size:18px;font-weight:700">&#10133;</div>
@@ -3093,6 +3094,7 @@ function renderGolfTab(name){
 }
 function abrirApp(cual){
   document.getElementById("home").style.display="none";
+  var ht=document.getElementById("home-top"); if(ht) ht.style.display="none";
   document.getElementById("app-pp").style.display=cual==="pp"?"block":"none";
   document.getElementById("app-golf").style.display=cual==="golf"?"block":"none";
   if(cual==="golf"){normalizeGolf();}
