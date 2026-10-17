@@ -32,7 +32,7 @@ Todos los registros en **DNS only** (nube gris, sin proxy). Si se activa el prox
 
 ```
 theironcapi/
-├── index.html           ← Landing (portada de theironcapi.com, retrato incrustado en el propio HTML)
+├── index.html           ← Landing (portada de theironcapi.com, banner "The Iron Capi" incrustado en el propio HTML)
 ├── bdd.html             ← App de resultados y estadísticas (todo el código va dentro)
 ├── manifest.json        ← Ficha de la app instalable: nombre, icono, colores
 ├── service-worker.js    ← Copia offline de los archivos y control de versiones
