@@ -32,14 +32,13 @@ Todos los registros en **DNS only** (nube gris, sin proxy). Si se activa el prox
 
 ```
 theironcapi/
-├── index.html           ← Landing (portada de theironcapi.com)
+├── index.html           ← Landing (portada de theironcapi.com, retrato incrustado en el propio HTML)
 ├── bdd.html             ← App de resultados y estadísticas (todo el código va dentro)
 ├── manifest.json        ← Ficha de la app instalable: nombre, icono, colores
 ├── service-worker.js    ← Copia offline de los archivos y control de versiones
 ├── icon-192.png         ← Icono de la app (Android)
 ├── icon-512.png         ← Icono grande (pantalla de carga)
 ├── apple-touch-icon.png ← Icono para iPhone (180 px)
-├── logo.png             ← Retrato con fondo transparente (landing)
 ├── CNAME                ← Dominio propio. No borrar
 └── README.md            ← Este archivo
 ```
