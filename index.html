@@ -62,6 +62,17 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
 .soc{display:block;transition:transform .2s,filter .2s}
 .soc img{display:block;height:clamp(64px,9vw,96px);width:auto}
 .soc:hover{transform:translateY(-3px);filter:brightness(1.12) drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.vc-wrap{display:flex;justify-content:center;margin:4px 0 16px}
+.vc-board{display:inline-flex;flex-direction:column;align-items:center;gap:10px;background:#1c1a17;padding:14px 18px 16px;border-radius:6px;
+  border:3px solid #3a332b;box-shadow:inset 0 0 0 2px #0e0d0b,0 8px 20px rgba(0,0,0,.25)}
+.vc-lbl{font-size:12px;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:#e8c46a}
+.vc-digits{display:flex;gap:6px}
+.vc-d{position:relative;width:clamp(30px,8vw,44px);height:clamp(46px,12vw,66px);background:linear-gradient(#2b2824 0 50%,#24211d 50% 100%);
+  border-radius:4px;box-shadow:inset 0 -2px 3px rgba(0,0,0,.6),0 2px 0 #0e0d0b;display:grid;place-items:center;overflow:hidden;
+  font-family:"Courier New",ui-monospace,monospace;font-weight:700;font-size:clamp(30px,8vw,46px);color:#f2ead8}
+.vc-d::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:#0e0d0b}
+.vc-d.vc-flip{animation:vcflip .18s ease-in}
+@keyframes vcflip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
 </style>
 </head>
 <body>
@@ -89,6 +100,12 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
   <div id="globo-visitas" style="width:185px;max-width:100%;margin:0 auto 12px;">
 <script type="text/javascript" src="//cdn.livetrafficfeed.com/static/globe-widget/live.js?w=185&amp;root=0&amp;n=fd1313&amp;o=dee813&amp;mv=a814544e2ee74d56"></script><noscript><a href="https://livetrafficfeed.com/live-globe-widget">Live Globe Widget</a></noscript>
   </div>
+  <div class="vc-wrap">
+    <div class="vc-board" aria-live="polite">
+      <div class="vc-lbl">Visitas</div>
+      <div class="vc-digits" id="vc-digits" aria-label="Visitas"></div>
+    </div>
+  </div>
   &copy; <span id="y">2026</span> The Iron Capi</footer>
 
 <script>
@@ -96,6 +113,26 @@ document.getElementById("y").textContent = new Date().getFullYear();
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js").catch(function(){});
 }
+</script>
+<script>
+(function(){
+  var N=6, box=document.getElementById("vc-digits"), cells=[];
+  if(!box)return;
+  for(var i=0;i<N;i++){var c=document.createElement("div");c.className="vc-d";c.textContent="-";box.appendChild(c);cells.push(c);}
+  function show(n){
+    var s=String(n).padStart(N,"0").slice(-N), i=0;
+    (function next(){
+      if(i>=N)return;
+      var c=cells[i], ch=s[i]; i++;
+      if(c.textContent!==ch){c.classList.remove("vc-flip");void c.offsetWidth;c.classList.add("vc-flip");setTimeout(function(){c.textContent=ch;},90);}
+      setTimeout(next,120);
+    })();
+  }
+  fetch("https://abacus.jasoncameron.dev/hit/theironcapi.com/home")
+    .then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(j){show(j.value);})
+    .catch(function(){});
+})();
 </script>
 </body>
 </html>
