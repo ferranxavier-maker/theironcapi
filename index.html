@@ -73,7 +73,10 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
 .vc-d::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;margin-top:-1px;background:#0e0d0b}
 .vc-d.vc-flip{animation:vcflip .18s ease-in}
 @keyframes vcflip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+.globo{width:185px;height:185px;max-width:100%;margin:0 auto 10px;cursor:grab}
+.globo:active{cursor:grabbing}
 </style>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8b63efe366d9453fbda3eb6635cae0ff"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
 
@@ -97,9 +100,7 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
 </main>
 
 <footer class="foot">
-  <div id="globo-visitas" style="width:185px;max-width:100%;margin:0 auto;height:198px;overflow:hidden;">
-<script type="text/javascript" src="//cdn.livetrafficfeed.com/static/globe-widget/live.js?w=185&amp;root=0&amp;n=fd1313&amp;o=dee813&amp;mv=a814544e2ee74d56"></script><noscript><a href="https://livetrafficfeed.com/live-globe-widget">Live Globe Widget</a></noscript>
-  </div>
+  <div id="globo-visitas" class="globo" aria-label="Globo de visitas"></div>
   <div class="vc-wrap">
     <div class="vc-board" aria-live="polite">
       <div class="vc-lbl">Visitas</div>
@@ -132,6 +133,64 @@ if ("serviceWorker" in navigator) {
     .then(function(r){if(!r.ok)throw 0;return r.json();})
     .then(function(j){show(j.value);})
     .catch(function(){});
+})();
+</script>
+<script>
+(function(){
+  // Globo de visitas propio: rojo = visitas pasadas (guardadas para siempre en Cloudflare KV), amarillo = el visitante actual
+  var API="https://ironcapi-visitas.theironsgolfclub.workers.dev";
+  var LIB="https://cdn.jsdelivr.net/npm/globe.gl@2.46.2/dist/globe.gl.min.js";
+  var TEX="https://cdn.jsdelivr.net/npm/three-globe@2.45.6/example/img/earth-day.jpg";
+  var ROJO="#d81e28", AMARILLO="#ffd400";
+  var el=document.getElementById("globo-visitas");
+  if(!el)return;
+  function sget(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
+  function sset(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
+  var yo=null;
+  try{yo=JSON.parse(sget("ic_yo")||"null");}catch(e){yo=null;}
+  // Una visita por sesion: la primera vez /visit (registra), al recargar solo /points (lee)
+  var datos=fetch(API+(sget("ic_visita")?"/points":"/visit"),{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(j){
+      sset("ic_visita","1");
+      if(j.you){yo=j.you;sset("ic_yo",JSON.stringify(yo));}
+      return j.points||[];
+    })
+    .catch(function(){return [];});
+  function esYo(p){return !!yo&&p.lat===yo.lat&&p.lon===yo.lon;}
+  function pintar(){
+    datos.then(function(pts){
+      if(yo&&!pts.some(esYo))pts.push({lat:yo.lat,lon:yo.lon,c:"",p:""});
+      var g;
+      try{g=Globe()(el);}catch(e){el.style.display="none";return;}
+      g.width(185).height(185)
+        .backgroundColor("rgba(0,0,0,0)")
+        .globeImageUrl(TEX)
+        .showAtmosphere(true).atmosphereColor("#9cc8ff").atmosphereAltitude(0.16)
+        .pointsData(pts).pointLat("lat").pointLng("lon")
+        .pointColor(function(p){return esYo(p)?AMARILLO:ROJO;})
+        .pointAltitude(function(p){return esYo(p)?0.03:0.012;})
+        .pointRadius(function(p){return esYo(p)?2:1.5;})
+        .pointResolution(8)
+        .pointLabel(function(p){return [p.c,p.p].filter(Boolean).join(", ");})
+        .ringsData(yo?[yo]:[]).ringLat("lat").ringLng("lon")
+        .ringColor(function(){return function(t){return "rgba(255,212,0,"+(1-t)+")";};})
+        .ringMaxRadius(7).ringPropagationSpeed(3).ringRepeatPeriod(900);
+      g.pointOfView(yo?{lat:yo.lat,lng:yo.lon,altitude:1.9}:{lat:30,lng:0,altitude:1.9},0);
+      var c=g.controls();
+      c.autoRotate=true;c.autoRotateSpeed=1.2;c.enableZoom=false;
+    });
+  }
+  // La libreria 3D solo se descarga cuando el pie esta cerca de verse
+  function cargar(){
+    var s=document.createElement("script");
+    s.src=LIB;s.onload=pintar;s.onerror=function(){el.style.display="none";};
+    document.head.appendChild(s);
+  }
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();cargar();}},{rootMargin:"400px"});
+    io.observe(el);
+  }else cargar();
 })();
 </script>
 </body>
