@@ -117,6 +117,34 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 <script>
+// Llamada comun al Worker de visitas (globo + contador). ?nocontar marca este navegador para que no cuente; ?contar lo deshace.
+(function(){
+  var API="https://ironcapi-visitas.theironsgolfclub.workers.dev";
+  function lget(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lset(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
+  function sget(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
+  function sset(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
+  var q=location.search;
+  if(/[?&]nocontar\b/.test(q)){lset("ic_nocontar","1");}
+  if(/[?&]contar\b/.test(q)){lset("ic_nocontar",null);}
+  var nocontar=lget("ic_nocontar")==="1";
+  if(/[?&](no)?contar\b/.test(q)){
+    var t=document.createElement("div");
+    t.textContent=nocontar?"Este navegador ya no cuenta visitas":"Este navegador vuelve a contar visitas";
+    t.style.cssText="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#1c1a17;color:#f2ead8;font:600 13px system-ui,sans-serif;padding:9px 14px;border-radius:6px;z-index:99;box-shadow:0 4px 12px rgba(0,0,0,.3)";
+    document.addEventListener("DOMContentLoaded",function(){document.body.appendChild(t);setTimeout(function(){t.remove();},4000);});
+  }
+  // Globo: la visita se registra una vez por sesion (/visit) y nunca si el navegador esta marcado. Contador: suma en cada carga salvo marcado.
+  var ruta=(nocontar||sget("ic_visita"))?"/points":"/visit";
+  var url=API+ruta+"?"+(nocontar?"get":"hit")+"=home";
+  var ctl=("AbortController" in window)?new AbortController():null;
+  var to=setTimeout(function(){if(ctl)ctl.abort();},5000);
+  window.IC={nocontar:nocontar,resp:fetch(url,{cache:"no-store",signal:ctl?ctl.signal:undefined})
+    .then(function(r){clearTimeout(to);if(!r.ok)throw 0;return r.json();})
+    .then(function(j){if(ruta==="/visit")sset("ic_visita","1");return j;},function(e){clearTimeout(to);throw e;})};
+})();
+</script>
+<script>
 (function(){
   var N=6, box=document.getElementById("vc-digits"), cells=[];
   if(!box)return;
@@ -130,10 +158,10 @@ if ("serviceWorker" in navigator) {
       setTimeout(next,120);
     })();
   }
-  fetch("https://abacus.jasoncameron.dev/hit/theironcapi.com/home")
-    .then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(j){show(j.value);})
-    .catch(function(){});
+  var ult=null;try{ult=localStorage.getItem("ic_cnt_home");}catch(e){}
+  window.IC.resp
+    .then(function(j){if(typeof j.count!=="number")throw 0;try{localStorage.setItem("ic_cnt_home",String(j.count));}catch(e){}show(j.count);})
+    .catch(function(){if(ult)show(+ult);});
 })();
 </script>
 <script>
@@ -162,9 +190,8 @@ if ("serviceWorker" in navigator) {
   try{yo=JSON.parse(sget("ic_yo")||"null");}catch(e){yo=null;}
 
   // 1) Visitas: una por sesion (/visit la primera vez, /points al recargar). Maximo 5 s de espera.
-  var datos=conTiempo(API+(sget("ic_visita")?"/points":"/visit"),5000)
+  var datos=window.IC.resp
     .then(function(j){
-      sset("ic_visita","1");
       if(j.you){yo=j.you;sset("ic_yo",JSON.stringify(yo));}
       var pts=j.points||[];
       lset("ic_pts",pts);

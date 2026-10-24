@@ -62,10 +62,19 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;justify-conten
       setTimeout(next,120);
     })();
   }
-  fetch("https://abacus.jasoncameron.dev/hit/theironcapi.com/onlyfans")
+  // Contador propio en el Worker de Cloudflare. ?nocontar marca este navegador para que no sume; ?contar lo deshace.
+  var nc=null,ult=null;
+  try{
+    if(/[?&]nocontar\b/.test(location.search))localStorage.setItem("ic_nocontar","1");
+    if(/[?&]contar\b/.test(location.search))localStorage.removeItem("ic_nocontar");
+    nc=localStorage.getItem("ic_nocontar")==="1";ult=localStorage.getItem("ic_cnt_onlyfans");
+  }catch(e){}
+  var ctl=("AbortController" in window)?new AbortController():null;
+  setTimeout(function(){if(ctl)ctl.abort();},5000);
+  fetch("https://ironcapi-visitas.theironsgolfclub.workers.dev/count?"+(nc?"get":"hit")+"=onlyfans",{cache:"no-store",signal:ctl?ctl.signal:undefined})
     .then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(j){show(j.value);})
-    .catch(function(){});
+    .then(function(j){if(typeof j.count!=="number")throw 0;try{localStorage.setItem("ic_cnt_onlyfans",String(j.count));}catch(e){}show(j.count);})
+    .catch(function(){if(ult)show(+ult);});
 })();
 </script>
 </body>
