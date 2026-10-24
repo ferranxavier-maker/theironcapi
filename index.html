@@ -73,7 +73,8 @@ a.opt:hover{background:var(--ink);color:var(--bg)}
 .vc-d::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;margin-top:-1px;background:#0e0d0b}
 .vc-d.vc-flip{animation:vcflip .18s ease-in}
 @keyframes vcflip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
-.globo{width:185px;height:185px;max-width:100%;margin:0 auto 10px;cursor:grab}
+.globo{width:250px;height:250px;max-width:100%;margin:0 auto 26px;cursor:grab;position:relative}
+.globo::after{content:"";position:absolute;left:22%;right:22%;bottom:-8px;height:12px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,.45) 0%,rgba(0,0,0,.18) 45%,rgba(0,0,0,0) 72%);pointer-events:none}
 .globo:active{cursor:grabbing}
 </style>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8b63efe366d9453fbda3eb6635cae0ff"}'></script><!-- End Cloudflare Web Analytics -->
@@ -137,60 +138,111 @@ if ("serviceWorker" in navigator) {
 </script>
 <script>
 (function(){
-  // Globo de visitas propio: rojo = visitas pasadas (guardadas para siempre en Cloudflare KV), amarillo = el visitante actual
+  // Globo de visitas propio: oceano azul, tierra blanca (estilo LiveTrafficFeed).
+  // Rojo = visitas pasadas (guardadas para siempre en Cloudflare KV); amarillo = el visitante actual.
   var API="https://ironcapi-visitas.theironsgolfclub.workers.dev";
   var LIB="https://cdn.jsdelivr.net/npm/globe.gl@2.46.2/dist/globe.gl.min.js";
-  var TEX="https://cdn.jsdelivr.net/npm/three-globe@2.45.6/example/img/earth-day.jpg";
-  var ROJO="#d81e28", AMARILLO="#ffd400";
+  var TOPOLIB="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js";
+  var MAPA="https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json";
+  var ROJO="#e0182a", AMARILLO="#ffd400", TAM=250;
   var el=document.getElementById("globo-visitas");
   if(!el)return;
   function sget(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
   function sset(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
+  function lget(k){try{return JSON.parse(localStorage.getItem(k)||"null");}catch(e){return null;}}
+  function lset(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  function conTiempo(url,ms){
+    var ctl=("AbortController" in window)?new AbortController():null;
+    var t=setTimeout(function(){if(ctl)ctl.abort();},ms);
+    return fetch(url,{cache:"no-store",signal:ctl?ctl.signal:undefined})
+      .then(function(r){clearTimeout(t);if(!r.ok)throw 0;return r.json();},function(e){clearTimeout(t);throw e;});
+  }
+  function red(x){return Math.round(x*10)/10;}
   var yo=null;
   try{yo=JSON.parse(sget("ic_yo")||"null");}catch(e){yo=null;}
-  // Una visita por sesion: la primera vez /visit (registra), al recargar solo /points (lee)
-  var datos=fetch(API+(sget("ic_visita")?"/points":"/visit"),{cache:"no-store"})
-    .then(function(r){if(!r.ok)throw 0;return r.json();})
+
+  // 1) Visitas: una por sesion (/visit la primera vez, /points al recargar). Maximo 5 s de espera.
+  var datos=conTiempo(API+(sget("ic_visita")?"/points":"/visit"),5000)
     .then(function(j){
       sset("ic_visita","1");
       if(j.you){yo=j.you;sset("ic_yo",JSON.stringify(yo));}
-      return j.points||[];
+      var pts=j.points||[];
+      lset("ic_pts",pts);
+      return pts;
     })
-    .catch(function(){return [];});
+    .catch(function(){
+      // Cloudflare no responde (p. ej. bloqueos de LaLiga): puntos que este navegador vio la ultima vez
+      return lget("ic_pts")||[];
+    });
+
+  // 2) Punto amarillo: si el Worker no ha dado la ubicacion, se pide a un servicio de geolocalizacion por IP (solo para pintarlo)
+  var ubic=datos.then(function(){
+    if(yo)return yo;
+    function prueba(url,lat,lon){
+      return conTiempo(url,4000).then(function(j){
+        var a=parseFloat(j[lat]),b=parseFloat(j[lon]);
+        if(!isFinite(a)||!isFinite(b))throw 0;
+        yo={lat:red(a),lon:red(b)};sset("ic_yo",JSON.stringify(yo));return yo;
+      });
+    }
+    return prueba("https://ipwho.is/","latitude","longitude")
+      .catch(function(){return prueba("https://get.geojs.io/v1/ip/geo.json","latitude","longitude");})
+      .catch(function(){return prueba("https://freeipapi.com/api/json","latitude","longitude");})
+      .catch(function(){return null;});
+  });
+
   function esYo(p){return !!yo&&p.lat===yo.lat&&p.lon===yo.lon;}
-  function pintar(){
-    datos.then(function(pts){
-      if(yo&&!pts.some(esYo))pts.push({lat:yo.lat,lon:yo.lon,c:"",p:""});
-      var g;
-      try{g=Globe()(el);}catch(e){el.style.display="none";return;}
-      g.width(185).height(185)
-        .backgroundColor("rgba(0,0,0,0)")
-        .globeImageUrl(TEX)
-        .showAtmosphere(true).atmosphereColor("#9cc8ff").atmosphereAltitude(0.16)
-        .pointsData(pts).pointLat("lat").pointLng("lon")
-        .pointColor(function(p){return esYo(p)?AMARILLO:ROJO;})
-        .pointAltitude(function(p){return esYo(p)?0.03:0.012;})
-        .pointRadius(function(p){return esYo(p)?2:1.5;})
-        .pointResolution(8)
-        .pointLabel(function(p){return [p.c,p.p].filter(Boolean).join(", ");})
-        .ringsData(yo?[yo]:[]).ringLat("lat").ringLng("lon")
-        .ringColor(function(){return function(t){return "rgba(255,212,0,"+(1-t)+")";};})
-        .ringMaxRadius(7).ringPropagationSpeed(3).ringRepeatPeriod(900);
-      g.pointOfView(yo?{lat:yo.lat,lng:yo.lon,altitude:1.9}:{lat:30,lng:0,altitude:1.9},0);
-      var c=g.controls();
-      c.autoRotate=true;c.autoRotateSpeed=1.2;c.enableZoom=false;
+  function cargarJS(src){
+    return new Promise(function(ok,ko){
+      var s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s);
     });
   }
-  // La libreria 3D solo se descarga cuando el pie esta cerca de verse
-  function cargar(){
-    var s=document.createElement("script");
-    s.src=LIB;s.onload=pintar;s.onerror=function(){el.style.display="none";};
-    document.head.appendChild(s);
-  }
-  if("IntersectionObserver" in window){
-    var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();cargar();}},{rootMargin:"400px"});
-    io.observe(el);
-  }else cargar();
+
+  // 3) El globo se pinta en cuanto llegan la libreria y el mapa, sin esperar a las visitas
+  var mapa=fetch(MAPA).then(function(r){return r.json();});
+  Promise.all([cargarJS(LIB),cargarJS(TOPOLIB),mapa]).then(function(r){
+    var topo=r[2];
+    var paises=topojson.feature(topo,topo.objects.countries).features;
+    var g=Globe()(el);
+    g.width(TAM).height(TAM)
+      .backgroundColor("rgba(0,0,0,0)")
+      .showAtmosphere(true).atmosphereColor("#bfe6ff").atmosphereAltitude(0.12)
+      .polygonsData(paises)
+      .polygonCapColor(function(){return "#ffffff";})
+      .polygonSideColor(function(){return "rgba(255,255,255,0)";})
+      .polygonStrokeColor(function(){return "#9fd8fb";})
+      .polygonAltitude(0.006)
+      .polygonsTransitionDuration(0)
+      .pointLat("lat").pointLng("lon")
+      .pointColor(function(p){return esYo(p)?AMARILLO:ROJO;})
+      .pointAltitude(function(p){return esYo(p)?0.03:0.015;})
+      .pointRadius(function(p){return esYo(p)?1.8:1.3;})
+      .pointResolution(10)
+      .pointsTransitionDuration(0)
+      .pointLabel(function(p){return [p.c,p.p].filter(Boolean).join(", ");})
+      .ringLat("lat").ringLng("lon")
+      .ringColor(function(){return function(t){return "rgba(255,212,0,"+(1-t)+")";};})
+      .ringMaxRadius(7).ringPropagationSpeed(3).ringRepeatPeriod(900);
+    var m=g.globeMaterial();
+    m.color.set("#38b2f4");
+    if(m.emissive)m.emissive.set("#0a4f8a");
+    if("shininess" in m)m.shininess=30;
+    g.pointOfView({lat:yo?yo.lat:30,lng:yo?yo.lon:10,altitude:1.75},0);
+    var c=g.controls();
+    c.autoRotate=true;c.autoRotateSpeed=1.2;c.enableZoom=false;
+
+    function puntos(pts){
+      pts=(pts||[]).slice();
+      if(yo&&!pts.some(esYo))pts.push({lat:yo.lat,lon:yo.lon,c:"",p:""});
+      g.pointsData(pts);
+      g.ringsData(yo?[yo]:[]);
+    }
+    datos.then(puntos);
+    ubic.then(function(u){
+      datos.then(puntos);
+      if(u)g.pointOfView({lat:u.lat,lng:u.lon,altitude:1.75},1200);
+    });
+  }).catch(function(){el.style.display="none";});
 })();
 </script>
 </body>
