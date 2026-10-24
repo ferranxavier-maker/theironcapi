@@ -1,7 +1,7 @@
 // The Iron Capi - Service Worker
 // Estrategia: cache-first para assets estaticos. Network-first para HTML.
 
-const CACHE_NAME = "ironcapi-v44";
+const CACHE_NAME = "ironcapi-v45";
 
 const ASSETS = [
   "./",
@@ -45,9 +45,10 @@ self.addEventListener("fetch", function(event){
   if(u.origin !== self.location.origin && u.hostname !== "cdn.jsdelivr.net") return;
 
   // Paginas (HTML): primero la red, para que los cambios se vean al momento; sin conexion, la copia guardada
+  // cache "no-cache": siempre se pregunta al servidor, sin usar la copia de la cache HTTP del navegador (GitHub Pages guarda 10 min)
   if(event.request.mode === "navigate" || event.request.destination === "document"){
     event.respondWith(
-      fetch(event.request).then(function(response){
+      fetch(event.request, {cache: "no-cache"}).then(function(response){
         if(response && response.status === 200){
           var clone = response.clone();
           caches.open(CACHE_NAME).then(function(cache){ cache.put(u.pathname === "/" ? "./" : event.request, clone); });
