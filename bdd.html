@@ -2494,8 +2494,8 @@ function renderGolfStats(){
           {icon:"&#129413;",label:"Eagles o mejor",val:sum("eag"),sub:pc(sum("eag")),bg:"#ecfeff",color:"#0891b2"},
           {icon:"&#128038;",label:"Birdies",val:sum("bir"),sub:pc(sum("bir")),bg:"#fef9c3",color:"#854d0e"},
           {icon:"&#9989;",label:"Pares",val:sum("par"),sub:pc(sum("par")),bg:"#f0fdf4",color:"#15803d"},
-          {icon:"&#10133;1",label:"Bogeys",val:sum("bog"),sub:pc(sum("bog")),bg:"#fff7ed",color:"#c2410c"},
-          {icon:"&#10133;2",label:"Dobles o peor",val:sum("dbl"),sub:pc(sum("dbl")),bg:"#fef2f2",color:"#991b1b"}];
+          {icon:"&#10060;",label:"Bogeys",val:sum("bog"),sub:pc(sum("bog")),bg:"#fff7ed",color:"#c2410c"},
+          {icon:"&#10060;&#10060;",label:"Dobles o peor",val:sum("dbl"),sub:pc(sum("dbl")),bg:"#fef2f2",color:"#991b1b"}];
   document.getElementById("golf-stats").innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:620px">'
     +cs.map(function(c){return cardHTML(c,"min-width:0;max-width:none;margin-bottom:0;padding:12px 14px;flex-direction:column;align-items:flex-start;gap:6px;",30,28);}).join("")+'</div>';
 }
